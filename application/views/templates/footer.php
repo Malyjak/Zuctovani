@@ -17,7 +17,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
 
 <footer class="main-footer">
     <div class="pull-right hidden-xs">
-        <b>Verze</b> 0.3.3
+        <b>Verze</b> 0.3.5
     </div>
     <strong>Copyright &copy; 2019 Bc. Jakub Malý.</strong> Všechna práva vyhrazena.
 </footer>

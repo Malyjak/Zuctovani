@@ -105,11 +105,15 @@ class Character extends Admin_Controller
 
         $items = unserialize($data['inventory']);
 
+        $items_qty = unserialize($data['inventory_qty']);
+
         if ($items != null) {
             foreach ($items as $key => $value) {
                 $item = $this->model_items->getItemData($value);
 
-                $buttons = ' <button type="button" class="btn btn-default" onclick="removeItemFunc(' . $item['id'] . ')" data-toggle="modal" data-target="#removeItemModal"><i class="fa fa-trash"></i></button>';
+                $buttons = ' <button type="button" class="btn btn-default" onclick="addItemQtyFunc(' . ($key + 1) . ')" data-toggle="modal" data-target="#addItemQty"><i class="fa fa-plus"></i></button>';
+                $buttons .= ' <button type="button" class="btn btn-default" onclick="removeItemQtyFunc(' . ($key + 1) . ')" data-toggle="modal" data-target="#removeItemQty"><i class="fa fa-minus"></i></button>';
+                $buttons .= ' <button type="button" class="btn btn-default" onclick="removeItemFunc(' . $item['id'] . ')" data-toggle="modal" data-target="#removeItemModal"><i class="fa fa-trash"></i></button>';
 
                 $quality = '';
                 switch ($item['quality']) {
@@ -162,6 +166,7 @@ class Character extends Admin_Controller
                     $purpose,
                     $type,
                     $item['description'],
+                    $items_qty[$key],
                     $buttons
                 );
             }
@@ -234,6 +239,9 @@ class Character extends Admin_Controller
             $this->form_validation->set_rules('hp', 'HP', 'trim|required|numeric');
             $this->form_validation->set_rules('mp', 'MP', 'trim|required|numeric');
             $this->form_validation->set_rules('sp', 'SP', 'trim|required|numeric');
+            $this->form_validation->set_rules('hp_max', 'Max HP', 'trim|required|numeric');
+            $this->form_validation->set_rules('mp_max', 'Max MP', 'trim|required|numeric');
+            $this->form_validation->set_rules('sp_max', 'Max SP', 'trim|required|numeric');
 
             $this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
 
@@ -242,6 +250,9 @@ class Character extends Admin_Controller
                     'hp' => $this->input->post('hp'),
                     'mp' => $this->input->post('mp'),
                     'sp' => $this->input->post('sp'),
+                    'hp_max' => $this->input->post('hp_max'),
+                    'mp_max' => $this->input->post('mp_max'),
+                    'sp_max' => $this->input->post('sp_max'),
                 );
 
                 $update = $this->model_character->update($data, $user_id);
@@ -455,12 +466,21 @@ class Character extends Admin_Controller
             $this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
 
             if ($this->form_validation->run() == TRUE) {
+                $char_data = $this->model_character->getCharacterData($user_id);
+                $items = unserialize($char_data['inventory']);
+                $items_qty = unserialize($char_data['inventory_qty']);
 
-                $items = unserialize(($this->model_character->getCharacterData($user_id))['inventory']);
-                $items[] = $this->input->post('item');
+                $item = $this->input->post('item');
+                if (false !== $key = array_search($item, $items)) {
+                    $items_qty[$key] = $items_qty[$key] + 1;
+                } else {
+                    $items[] = $this->input->post('item');
+                    $items_qty[] = 1;
+                }
 
                 $data = array(
                     'inventory' => serialize($items),
+                    'inventory_qty' => serialize($items_qty),
                 );
 
                 $update = $this->model_character->update($data, $user_id);
@@ -503,7 +523,12 @@ class Character extends Admin_Controller
                 $skills_lvl = array_fill(0, count($skills), 6);
             }
 
-            $inventory = serialize($this->input->post('inventory'));
+            $inventory = $this->input->post('inventory');
+            if (is_null($inventory)) {
+                $inventory_qty = null;
+            } else {
+                $inventory_qty = array_fill(0, count($inventory), 1);
+            }
 
             $data = array(
                 'user_id' => $this->input->post('user_id'),
@@ -516,7 +541,8 @@ class Character extends Admin_Controller
                 'perks' => $this->input->post('perks'),
                 'skills' => serialize($skills),
                 'skills_lvl' => serialize($skills_lvl),
-                'inventory' => $inventory,
+                'inventory' => serialize($inventory),
+                'inventory_qty' => serialize($inventory_qty),
             );
 
             $create = $this->model_character->create($data);
@@ -570,7 +596,7 @@ class Character extends Admin_Controller
                 $update = $this->model_character->update($data, $user_id);
                 if ($update == true) {
                     $response['success'] = true;
-                    $response['messages'] = 'Úspěšně odebráno';
+                    $response['messages'] = 'Úspěšně přidáno';
                 } else {
                     $response['success'] = false;
                     $response['messages'] = 'Nastala chyba!';
@@ -685,6 +711,103 @@ class Character extends Admin_Controller
         echo json_encode($response);
     }
 
+    public function addItemQty()
+    {
+        if (!in_array('updateCharacter', $this->permission)) {
+            redirect('dashboard', 'refresh');
+        }
+
+        $response = array();
+
+        $user_id = $this->session->userdata('id');
+
+        $item_pos = $this->input->post('item_pos');
+        if ((!$this->model_character->haveNoCharacter($user_id)) && $item_pos) {
+            $item_qty = unserialize($this->model_character->getCharacterData($user_id)['inventory_qty']);
+
+            if (!empty($item_qty)) {
+                foreach ($item_qty as $key => $value) {
+                    if ($key == ($item_pos - 1)) {
+                        $item_qty[$key] = $value + 1;
+                        break;
+                    }
+                }
+
+                $data = array(
+                    'inventory_qty' => serialize(array_values($item_qty)),
+                );
+
+                $update = $this->model_character->update($data, $user_id);
+                if ($update == true) {
+                    $response['success'] = true;
+                    $response['messages'] = 'Úspěšně přidáno';
+                } else {
+                    $response['success'] = false;
+                    $response['messages'] = 'Nastala chyba!';
+                }
+            }
+        } else {
+            $response['success'] = false;
+            $response['messages'] = "Obnovte prosím stránku";
+        }
+
+        echo json_encode($response);
+    }
+
+    public function removeItemQty()
+    {
+        if (!in_array('updateCharacter', $this->permission)) {
+            redirect('dashboard', 'refresh');
+        }
+
+        $response = array();
+
+        $user_id = $this->session->userdata('id');
+
+        $item_pos = $this->input->post('item_pos');
+        if ((!$this->model_character->haveNoCharacter($user_id)) && $item_pos) {
+            $item_qty = unserialize($this->model_character->getCharacterData($user_id)['inventory_qty']);
+
+            if (!empty($item_pos)) {
+                $change = true;
+                foreach ($item_qty as $key => $value) {
+                    if ($key == ($item_pos - 1)) {
+                        if ($value > 1) {
+                            $item_qty[$key] = $value - 1;
+                            break;
+                        } else {
+                            $change = false;
+                            break;
+                        }
+                    }
+                }
+
+                if ($change) {
+                    $data = array(
+                        'inventory_qty' => serialize(array_values($item_qty)),
+                    );
+
+                    $update = $this->model_character->update($data, $user_id);
+                    if ($update == true) {
+                        $response['success'] = true;
+                        $response['messages'] = 'Úspěšně odebráno';
+                    } else {
+                        $response['success'] = false;
+                        $response['messages'] = 'Nastala chyba!';
+                    }
+                } else {
+                    $response['success'] = false;
+                    $response['messages'] = 'Kvantita je již na minimu! Pro odstranění předmětu prosím použijte k tomu určené tlačítko';
+                }
+            }
+        } else {
+            $response['success'] = false;
+            $response['messages'] = "Obnovte prosím stránku";
+        }
+
+        echo json_encode($response);
+    }
+
     public function removeItem()
     {
         if (!in_array('updateCharacter', $this->permission)) {
@@ -697,20 +820,32 @@ class Character extends Admin_Controller
 
         $item_id = $this->input->post('item_id');
         if ((!$this->model_character->haveNoCharacter($user_id)) && $item_id) {
-            $items = unserialize(($this->model_character->getCharacterData($user_id))['inventory']);
-            $items = array_values(array_diff($items, array($item_id)));
+            $char_data = $this->model_character->getCharacterData($user_id);
+            $items = unserialize($char_data['inventory']);
+            $items_qty = unserialize($char_data['inventory_qty']);
 
-            $data = array(
-                'inventory' => serialize($items),
-            );
+            if (!empty($items)) {
+                foreach ($items as $key => $value) {
+                    if ($value == $item_id) {
+                        unset($items[$key]);
+                        unset($items_qty[$key]);
+                        break;
+                    }
+                }
 
-            $update = $this->model_character->update($data, $user_id);
-            if ($update == true) {
-                $response['success'] = true;
-                $response['messages'] = 'Úspěšně odebráno';
-            } else {
-                $response['success'] = false;
-                $response['messages'] = 'Nastala chyba!';
+                $data = array(
+                    'inventory' => serialize(array_values($items)),
+                    'inventory_qty' => serialize(array_values($items_qty)),
+                );
+
+                $update = $this->model_character->update($data, $user_id);
+                if ($update == true) {
+                    $response['success'] = true;
+                    $response['messages'] = 'Úspěšně odebráno';
+                } else {
+                    $response['success'] = false;
+                    $response['messages'] = 'Nastala chyba!';
+                }
             }
         } else {
             $response['success'] = false;

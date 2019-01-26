@@ -68,7 +68,10 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                                                 <h4>XP: <?php echo $char_data['xp']; ?></h4>
                                                 <h4><?php echo $char_data['money']; ?> Stříbrňáků</h4>
                                                 <br>
-                                                <h4>Rasa: <?php echo $race_char['name']; ?></h4>
+                                                <h4>Rasa: <?php echo $race_char['name']; ?>
+                                                    <br>
+                                                    <?php echo $race_char['description']; ?>
+                                                </h4>
                                                 <br>
                                                 <h4>Dar: <?php echo $char_data['gift']; ?></h4>
                                                 <br>
@@ -83,9 +86,12 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                                         </div>
                                         <div class="small-box bg-red">
                                             <div class="inner" id="hpList">
-                                                <h3>HP: <?php echo $char_data['hp']; ?></h3>
-                                                <h4>MP: <?php echo $char_data['mp']; ?></h4>
-                                                <h4>SP: <?php echo $char_data['sp']; ?></h4>
+                                                <h3>
+                                                    HP: <?php echo $char_data['hp'] . "/" . $char_data['hp_max']; ?></h3>
+                                                <h4>
+                                                    MP: <?php echo $char_data['mp'] . "/" . $char_data['mp_max']; ?></h4>
+                                                <h4>
+                                                    SP: <?php echo $char_data['sp'] . "/" . $char_data['sp_max']; ?></h4>
                                             </div>
                                             <div class="icon">
                                                 <i class="ion ion-arrow-graph-up-right"></i>
@@ -162,7 +168,8 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                                                 <th>Kvalita</th>
                                                 <th>Účel</th>
                                                 <th>Typ</th>
-                                                <th>Detailní popis</th>
+                                                <th>Popis</th>
+                                                <th>x</th>
                                                 <th>Akce</th>
                                             </tr>
                                             </thead>
@@ -251,20 +258,41 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
             <form role="form" action="<?php echo base_url('character/updateHp/') ?>" method="post"
                   id="editHpForm">
                 <div class="modal-body" id="hpListEdit">
-                    <div class="form-group">
-                        <label for="hp">HP</label>
-                        <input type="number" class="form-control" id="hp" name="hp"
-                               value="<?php echo $char_data['hp']; ?>" autocomplete="off" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="mp">MP</label>
-                        <input type="number" class="form-control" id="mp" name="mp"
-                               value="<?php echo $char_data['mp']; ?>" autocomplete="off" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="sp">SP</label>
-                        <input type="number" class="form-control" id="sp" name="sp"
-                               value="<?php echo $char_data['sp']; ?>" autocomplete="off" required>
+                    <div class="row">
+                        <div class="col-lg-6 col-xs-6">
+                            <div class="form-group">
+                                <label for="hp">HP</label>
+                                <input type="number" class="form-control" id="hp" name="hp"
+                                       value="<?php echo $char_data['hp']; ?>" autocomplete="off" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="mp">MP</label>
+                                <input type="number" class="form-control" id="mp" name="mp"
+                                       value="<?php echo $char_data['mp']; ?>" autocomplete="off" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sp">SP</label>
+                                <input type="number" class="form-control" id="sp" name="sp"
+                                       value="<?php echo $char_data['sp']; ?>" autocomplete="off" required>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-xs-6">
+                            <div class="form-group">
+                                <label for="hp_max">Max HP</label>
+                                <input type="number" class="form-control" id="hp_max" name="hp_max"
+                                       value="<?php echo $char_data['hp_max']; ?>" autocomplete="off" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="mp_max">Max MP</label>
+                                <input type="number" class="form-control" id="mp_max" name="mp_max"
+                                       value="<?php echo $char_data['mp_max']; ?>" autocomplete="off" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sp_max">Max SP</label>
+                                <input type="number" class="form-control" id="sp_max" name="sp_max"
+                                       value="<?php echo $char_data['sp_max']; ?>" autocomplete="off" required>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -930,6 +958,46 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                 });
 
                 return false;
+            });
+        }
+    }
+
+    function addItemQtyFunc(id) {
+        if (id) {
+            $.ajax({
+                url: base_url + 'character/addItemQty/',
+                type: 'POST',
+                data: {item_pos: id},
+                dataType: 'json',
+                success: function (response) {
+                    itemsTable.ajax.reload(null, false);
+                    if (response.success === true) {
+                    } else {
+                        $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">' +
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + response.messages +
+                            '</div>');
+                    }
+                }
+            });
+        }
+    }
+
+    function removeItemQtyFunc(id) {
+        if (id) {
+            $.ajax({
+                url: base_url + 'character/removeItemQty/',
+                type: 'POST',
+                data: {item_pos: id},
+                dataType: 'json',
+                success: function (response) {
+                    itemsTable.ajax.reload(null, false);
+                    if (response.success === true) {
+                    } else {
+                        $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">' +
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + response.messages +
+                            '</div>');
+                    }
+                }
             });
         }
     }

@@ -11,6 +11,9 @@ CREATE TABLE z_characters(
 	hp int(11),
 	mp int(11),
 	sp int(11),
+	hp_max int(11),
+	mp_max int(11),
+	sp_max int(11),
 	reflexes int(11),
 	initiative int(11),
 	magic text,
@@ -18,6 +21,7 @@ CREATE TABLE z_characters(
 	skills text,
 	skills_lvl text,
 	inventory text,
+	inventory_qty text,
     PRIMARY KEY (id)
 );
 
@@ -63,12 +67,16 @@ CREATE TABLE z_npcs(
 	hp int(11),
 	mp int(11),
 	sp int(11),
+	hp_max int(11),
+	mp_max int(11),
+	sp_max int(11),
 	reflexes int(11),
 	initiative int(11),
 	magic text,
 	skills text,
 	skills_lvl text,
 	inventory text,
+	inventory_qty text,
     PRIMARY KEY (id)
 );
 
