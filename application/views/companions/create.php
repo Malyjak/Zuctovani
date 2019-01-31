@@ -18,13 +18,13 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-            Vytvořit
-            <small>Postava</small>
+            Přidat
+            <small>Společníci</small>
         </h1>
         <ol class="breadcrumb">
             <li><a href="<?php echo base_url('dashboard/') ?>"><i class="fa fa-line-chart"></i> Domů</a></li>
-            <li><a href="<?php echo base_url('character/') ?>">Postava</a></li>
-            <li class="active">Vytvořit</li>
+            <li><a href="<?php echo base_url('companions/') ?>">Společníci</a></li>
+            <li class="active">Přidat</li>
         </ol>
     </section>
     <section class="content">
@@ -46,9 +46,9 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                 <?php endif; ?>
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title">Vytvořit postavu</h3>
+                        <h3 class="box-title">Přidat společníka</h3>
                     </div>
-                    <form role="form" action="<?php base_url('character/create') ?>" method="post"
+                    <form role="form" action="<?php base_url('companions/create') ?>" method="post"
                           enctype="multipart/form-data">
                         <div class="box-body">
                             <div class="validation-error">
@@ -61,29 +61,10 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                                        autocomplete="off" required/>
                             </div>
                             <div class="form-group">
-                                <label for="race">Rasa</label>
-                                <select class="form-control" id="race" name="race" required>
-                                    <?php foreach ($races as $k => $v): ?>
-                                        <option value="<?php echo $v['id'] ?>"><?php echo $v['name'] ?></option>
-                                    <?php endforeach ?>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="gift">Dar</label>
-                                <textarea type="text" class="form-control" id="gift" name="gift"
-                                          placeholder="Dar" autocomplete="off">
+                                <label for="magic">Kouzla/Specializace</label>
+                                <textarea type="text" class="form-control" id="magic" name="magic"
+                                          placeholder="Kouzla/Specializace" autocomplete="off">
                                 </textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="origin">Původ</label>
-                                <textarea type="text" class="form-control" id="origin" name="origin"
-                                          placeholder="Původ" autocomplete="off">
-                                </textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="money">Stříbrňáky</label>
-                                <input type="number" class="form-control" id="money" name="money" value="0"
-                                       autocomplete="off" required/>
                             </div>
                             <div class="form-group">
                                 <label for="skills">Dovednosti</label>
@@ -114,21 +95,10 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                                     <?php endforeach ?>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label for="magic">Kouzla/Specializace</label>
-                                <textarea type="text" class="form-control" id="magic" name="magic"
-                                          placeholder="Kouzla/Specializace" autocomplete="off">
-                                </textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="perks">Perky</label>
-                                <textarea type="text" class="form-control" id="perks" name="perks"
-                                          placeholder="Perky" autocomplete="off">
-                                </textarea>
-                            </div>
                         </div>
                         <div class="box-footer">
-                            <button type="submit" class="btn btn-primary">Vytvořit</button>
+                            <button type="submit" class="btn btn-primary">Přidat</button>
+                            <a href="<?php echo base_url('companions/') ?>" class="btn btn-warning">Zpět</a>
                         </div>
                     </form>
                 </div>
@@ -140,12 +110,10 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
 <script type="text/javascript">
     $(document).ready(function () {
         $(".select_group").select2();
-        $("#gift").wysihtml5();
-        $("#origin").wysihtml5();
         $("#magic").wysihtml5();
-        $("#perks").wysihtml5();
 
-        $("#charNav").addClass('active');
+        $("#mainCompNav").addClass('active');
+        $("#addCompNav").addClass('active');
 
     });
 

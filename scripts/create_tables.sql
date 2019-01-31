@@ -25,6 +25,19 @@ CREATE TABLE z_characters(
     PRIMARY KEY (id)
 );
 
+CREATE TABLE z_companions(
+    id int(11) NOT NULL AUTO_INCREMENT,
+	user_id int(11) NOT NULL,
+    name varchar(255) NOT NULL,
+	magic text,
+	skills text,
+	skills_lvl text,
+	inventory text,
+	inventory_qty text,
+	comp_qty int(11),
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE z_groups(
     id int(11) NOT NULL AUTO_INCREMENT,
     group_name varchar(255) NOT NULL,
@@ -77,6 +90,13 @@ CREATE TABLE z_npcs(
 	skills_lvl text,
 	inventory text,
 	inventory_qty text,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE z_piles(
+    id int(11) NOT NULL AUTO_INCREMENT,
+    user_id int(11) NOT NULL,
+    text text,
     PRIMARY KEY (id)
 );
 

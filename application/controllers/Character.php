@@ -55,8 +55,7 @@ class Character extends Admin_Controller
     {
         $result = array('data' => array());
 
-        $user_id = $this->session->userdata('id');
-        $data = $this->model_character->getCharacterData($user_id);
+        $data = $this->model_character->getCharacterData($this->session->userdata('id'));
 
         $skills = unserialize($data['skills']);
 
@@ -166,7 +165,7 @@ class Character extends Admin_Controller
                     $purpose,
                     $type,
                     $item['description'],
-                    $items_qty[$key],
+                    $items_qty[$key]."x",
                     $buttons
                 );
             }
@@ -471,7 +470,7 @@ class Character extends Admin_Controller
                 $items_qty = unserialize($char_data['inventory_qty']);
 
                 $item = $this->input->post('item');
-                if (false !== $key = array_search($item, $items)) {
+                if (($items !== null) && (false !== $key = array_search($item, $items))) {
                     $items_qty[$key] = $items_qty[$key] + 1;
                 } else {
                     $items[] = $this->input->post('item');

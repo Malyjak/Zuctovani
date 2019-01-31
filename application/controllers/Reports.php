@@ -35,7 +35,7 @@ class Reports extends Admin_Controller
     */
 	public function index()
 	{
-		if(!in_array('viewReports', $this->permission)) {
+		if(!in_array('viewReportss', $this->permission)) {
             redirect('dashboard', 'refresh');
         }
 		

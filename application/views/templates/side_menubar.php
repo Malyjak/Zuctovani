@@ -182,10 +182,25 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                     </li>
                 <?php endif; ?>
                 <?php if (in_array('createCompanion', $user_permission) || in_array('updateCompanion', $user_permission) || in_array('viewCompanion', $user_permission) || in_array('deleteCompanion', $user_permission)): ?>
-                    <li id="compNav">
-                        <a href="<?php echo base_url('companions/') ?>">
-                            <i class="fa fa-paw"></i> <span>Společníci/Zvířátka - 0.4.0</span>
+                    <li class="treeview" id="mainCompNav">
+                        <a href="#">
+                            <i class="fa fa-paw"></i>
+                            <span>Společníci</span>
+                            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
                         </a>
+                        <ul class="treeview-menu">
+                            <?php if (in_array('createCompanion', $user_permission)): ?>
+                                <li id="addCompNav"><a href="<?php echo base_url('companions/create') ?>"><i
+                                                class="fa fa-circle-o"></i> Přidat společníka</a></li>
+                            <?php endif; ?>
+
+                            <?php if (in_array('updateCompanion', $user_permission) || in_array('viewCompanion', $user_permission) || in_array('deleteCompanion', $user_permission)): ?>
+                                <li id="manageCompNav"><a href="<?php echo base_url('companions') ?>"><i
+                                                class="fa fa-circle-o"></i> Spravovat společníky</a></li>
+                            <?php endif; ?>
+                        </ul>
                     </li>
                 <?php endif; ?>
                 <?php if (in_array('viewReports', $user_permission)): ?>
