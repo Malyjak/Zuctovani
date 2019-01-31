@@ -16,22 +16,35 @@ You should have received a copy of the GNU General Public License
 along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-class Model_npcs extends CI_Model
+class Model_companions extends CI_Model
 {
     public function __construct()
     {
         parent::__construct();
     }
 
-    public function getNpcData($id = null)
+    public function getCompData($user_id = null)
+    {
+        if ($user_id) {
+            $sql = "SELECT * FROM z_companions where user_id = ?";
+            $query = $this->db->query($sql, array($user_id));
+            return $query->result_array();
+        }
+
+        $sql = "SELECT * FROM z_companions ORDER BY id DESC";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    public function getCompDataById($id = null)
     {
         if ($id) {
-            $sql = "SELECT * FROM z_npcs where id = ?";
+            $sql = "SELECT * FROM z_companions where id = ?";
             $query = $this->db->query($sql, array($id));
             return $query->row_array();
         }
 
-        $sql = "SELECT * FROM z_npcs ORDER BY id DESC";
+        $sql = "SELECT * FROM z_companions ORDER BY id DESC";
         $query = $this->db->query($sql);
         return $query->result_array();
     }
@@ -39,7 +52,7 @@ class Model_npcs extends CI_Model
     public function create($data)
     {
         if ($data) {
-            $insert = $this->db->insert('Z_npcs', $data);
+            $insert = $this->db->insert('Z_companions', $data);
             return ($insert == true) ? true : false;
         }
     }
@@ -48,7 +61,7 @@ class Model_npcs extends CI_Model
     {
         if ($data && $id) {
             $this->db->where('id', $id);
-            $update = $this->db->update('Z_npcs', $data);
+            $update = $this->db->update('Z_companions', $data);
             return ($update == true) ? true : false;
         }
     }
@@ -57,16 +70,9 @@ class Model_npcs extends CI_Model
     {
         if ($id) {
             $this->db->where('id', $id);
-            $delete = $this->db->delete('Z_npcs');
+            $delete = $this->db->delete('Z_companions');
             return ($delete == true) ? true : false;
         }
-    }
-
-    public function countTotalNpcs()
-    {
-        $sql = "SELECT * FROM z_npcs";
-        $query = $this->db->query($sql);
-        return $query->num_rows();
     }
 
 }

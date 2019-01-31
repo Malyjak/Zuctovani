@@ -23,7 +23,6 @@ class Model_character extends CI_Model
         parent::__construct();
     }
 
-    /* get the item data */
     public function getCharacterData($user_id = null)
     {
         if ($user_id) {
