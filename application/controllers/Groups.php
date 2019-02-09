@@ -71,7 +71,7 @@ class Groups extends Admin_Controller
         }
     }
 
-    public function edit($id = null)
+    public function update($id = null)
     {
         if (!in_array('updateGroup', $this->permission)) {
             redirect('dashboard', 'refresh');
@@ -79,27 +79,32 @@ class Groups extends Admin_Controller
 
         if ($id) {
             $this->form_validation->set_rules('group_name', 'Group name', 'required');
-
-            if ($this->form_validation->run() == TRUE) {
-                $permission = serialize($this->input->post('permission'));
-
-                $data = array(
-                    'group_name' => $this->input->post('group_name'),
-                    'permission' => $permission
-                );
-
-                $update = $this->model_groups->edit($data, $id);
-                if ($update == true) {
-                    $this->session->set_flashdata('success', 'Skupina byla úspěšně upravena');
-                    redirect('groups/', 'refresh');
-                } else {
-                    $this->session->set_flashdata('errors', 'Nastala chyba!');
-                    redirect('groups/edit/' . $id, 'refresh');
-                }
+            $check = $this->model_groups->existInGroups($id);
+            if ($check == false) {
+                $this->session->set_flashdata('error', 'Skupina neexistuje!');
+                redirect('groups/', 'refresh');
             } else {
-                $group_data = $this->model_groups->getGroupData($id);
-                $this->data['group_data'] = $group_data;
-                $this->render_template('groups/edit', $this->data);
+                if ($this->form_validation->run() == TRUE) {
+                    $permission = serialize($this->input->post('permission'));
+
+                    $data = array(
+                        'group_name' => $this->input->post('group_name'),
+                        'permission' => $permission
+                    );
+
+                    $update = $this->model_groups->update($data, $id);
+                    if ($update == true) {
+                        $this->session->set_flashdata('success', 'Skupina byla úspěšně upravena');
+                        redirect('groups/', 'refresh');
+                    } else {
+                        $this->session->set_flashdata('errors', 'Nastala chyba!');
+                        redirect('groups/update/' . $id, 'refresh');
+                    }
+                } else {
+                    $group_data = $this->model_groups->getGroupData($id);
+                    $this->data['group_data'] = $group_data;
+                    $this->render_template('groups/update', $this->data);
+                }
             }
         }
     }
@@ -112,11 +117,10 @@ class Groups extends Admin_Controller
 
         if ($id) {
             if ($this->input->post('confirm')) {
-                $check = $this->model_groups->existInUserGroup($id);
-                if ($check == true) {
+                if ($this->model_groups->existInUserGroup($id)) {
                     $this->session->set_flashdata('error', 'Skupina je používaná!');
                     redirect('groups/', 'refresh');
-                } else {
+                } else if ($this->model_groups->existInGroups($id)) {
                     $delete = $this->model_groups->delete($id);
                     if ($delete == true) {
                         $this->session->set_flashdata('success', 'Skupina byla úspěšně odstraněna');

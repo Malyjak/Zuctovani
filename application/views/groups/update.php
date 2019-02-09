@@ -138,33 +138,6 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                                             ?>></td>
                                     </tr>
                                     <tr>
-                                        <td>Hráči</td>
-                                        <td><input type="checkbox" name="permission[]" id="permission" class="minimal"
-                                                   value="createUser" <?php if ($serialize_permission) {
-                                                if (in_array('createUser', $serialize_permission)) {
-                                                    echo "checked";
-                                                }
-                                            } ?>></td>
-                                        <td><input type="checkbox" name="permission[]" id="permission" class="minimal"
-                                                   value="updateUser" <?php if ($serialize_permission) {
-                                                if (in_array('updateUser', $serialize_permission)) {
-                                                    echo "checked";
-                                                }
-                                            } ?>></td>
-                                        <td><input type="checkbox" name="permission[]" id="permission" class="minimal"
-                                                   value="viewUser" <?php if ($serialize_permission) {
-                                                if (in_array('viewUser', $serialize_permission)) {
-                                                    echo "checked";
-                                                }
-                                            } ?>></td>
-                                        <td><input type="checkbox" name="permission[]" id="permission" class="minimal"
-                                                   value="deleteUser" <?php if ($serialize_permission) {
-                                                if (in_array('deleteUser', $serialize_permission)) {
-                                                    echo "checked";
-                                                }
-                                            } ?>></td>
-                                    </tr>
-                                    <tr>
                                         <td>Lokace</td>
                                         <td><input type="checkbox" name="permission[]" id="permission" class="minimal"
                                                    value="createLocation" <?php if ($serialize_permission) {
@@ -187,6 +160,33 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                                         <td><input type="checkbox" name="permission[]" id="permission" class="minimal"
                                                    value="deleteLocation" <?php if ($serialize_permission) {
                                                 if (in_array('deleteLocation', $serialize_permission)) {
+                                                    echo "checked";
+                                                }
+                                            } ?>></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Hráči</td>
+                                        <td><input type="checkbox" name="permission[]" id="permission" class="minimal"
+                                                   value="createUser" <?php if ($serialize_permission) {
+                                                if (in_array('createUser', $serialize_permission)) {
+                                                    echo "checked";
+                                                }
+                                            } ?>></td>
+                                        <td><input type="checkbox" name="permission[]" id="permission" class="minimal"
+                                                   value="updateUser" <?php if ($serialize_permission) {
+                                                if (in_array('updateUser', $serialize_permission)) {
+                                                    echo "checked";
+                                                }
+                                            } ?>></td>
+                                        <td><input type="checkbox" name="permission[]" id="permission" class="minimal"
+                                                   value="viewUser" <?php if ($serialize_permission) {
+                                                if (in_array('viewUser', $serialize_permission)) {
+                                                    echo "checked";
+                                                }
+                                            } ?>></td>
+                                        <td><input type="checkbox" name="permission[]" id="permission" class="minimal"
+                                                   value="deleteUser" <?php if ($serialize_permission) {
+                                                if (in_array('deleteUser', $serialize_permission)) {
                                                     echo "checked";
                                                 }
                                             } ?>></td>

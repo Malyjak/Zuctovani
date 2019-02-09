@@ -15,18 +15,3 @@ You should have received a copy of the GNU General Public License
 along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
-<header class="main-header">
-    <a href="http://naslouchac.simplesite.com/" class="logo">
-        <span class="logo-mini"><b>Z</b></span>
-        <span class="logo-lg"><b>Zúčtování</b></span>
-    </a>
-    <nav class="navbar navbar-static-top">
-        <a href="" class="sidebar-toggle" data-toggle="push-menu" role="button">
-            <span class="sr-only">Změnit zobrazení</span>
-        </a>
-        <a href="" class="sidebar-toggle dice-toggle" data-toggle="push-throw" role="button">
-            <span class="sr-only">Hodit kostkami</span>
-        </a>
-    </nav>
-</header>
-  

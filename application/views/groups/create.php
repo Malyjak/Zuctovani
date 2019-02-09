@@ -91,17 +91,6 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                                                    class="minimal"></td>
                                     </tr>
                                     <tr>
-                                        <td>Hráči</td>
-                                        <td><input type="checkbox" name="permission[]" id="permission"
-                                                   value="createUser" class="minimal"></td>
-                                        <td><input type="checkbox" name="permission[]" id="permission"
-                                                   value="updateUser" class="minimal"></td>
-                                        <td><input type="checkbox" name="permission[]" id="permission" value="viewUser"
-                                                   class="minimal"></td>
-                                        <td><input type="checkbox" name="permission[]" id="permission"
-                                                   value="deleteUser" class="minimal"></td>
-                                    </tr>
-                                    <tr>
                                         <td>Lokace</td>
                                         <td><input type="checkbox" name="permission[]" id="permission"
                                                    value="createLocation" class="minimal"></td>
@@ -111,6 +100,17 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                                                    value="viewLocation" class="minimal"></td>
                                         <td><input type="checkbox" name="permission[]" id="permission"
                                                    value="deleteLocation" class="minimal"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Hráči</td>
+                                        <td><input type="checkbox" name="permission[]" id="permission"
+                                                   value="createUser" class="minimal"></td>
+                                        <td><input type="checkbox" name="permission[]" id="permission"
+                                                   value="updateUser" class="minimal"></td>
+                                        <td><input type="checkbox" name="permission[]" id="permission" value="viewUser"
+                                                   class="minimal"></td>
+                                        <td><input type="checkbox" name="permission[]" id="permission"
+                                                   value="deleteUser" class="minimal"></td>
                                     </tr>
                                     <tr>
                                         <td>Dovednosti</td>

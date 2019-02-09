@@ -42,7 +42,6 @@ class Auth extends Admin_Controller
                 $login = $this->model_auth->login($this->input->post('email'), $this->input->post('password'));
 
                 if ($login) {
-
                     $logged_in_sess = array(
                         'id' => $login['id'],
                         'username' => $login['username'],

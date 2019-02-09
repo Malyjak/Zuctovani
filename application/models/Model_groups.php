@@ -42,7 +42,7 @@ class Model_groups extends CI_Model
         return ($create == true) ? true : false;
     }
 
-    public function edit($data, $id)
+    public function update($data, $id)
     {
         $this->db->where('id', $id);
         $update = $this->db->update('Z_groups', $data);
@@ -54,6 +54,12 @@ class Model_groups extends CI_Model
         $this->db->where('id', $id);
         $delete = $this->db->delete('Z_groups');
         return ($delete == true) ? true : false;
+    }
+
+    public function existInGroups($id){
+        $sql = "SELECT * FROM z_groups WHERE id = ?";
+        $query = $this->db->query($sql, array($id));
+        return ($query->num_rows() == 1) ? true : false;
     }
 
     public function existInUserGroup($id)

@@ -42,6 +42,10 @@ class Items extends Admin_Controller
 
     public function fetchItemData()
     {
+        if (!in_array('viewItem', $this->permission)) {
+            redirect('dashboard', 'refresh');
+        }
+
         $result = array('data' => array());
 
         $data = $this->model_items->getItemData();
@@ -53,7 +57,7 @@ class Items extends Admin_Controller
             }
 
             if (in_array('deleteItem', $this->permission)) {
-                $buttons .= ' <button type="button" class="btn btn-default" onclick="removeFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button>';
+                $buttons .= ' <button type="button" class="btn btn-default" onclick="deleteFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash"></i></button>';
             }
 
             $quality = '';
@@ -163,31 +167,36 @@ class Items extends Admin_Controller
         }
 
         $this->form_validation->set_rules('name', 'name', 'trim|required');
-
-        if ($this->form_validation->run() == TRUE) {
-            $data = array(
-                'name' => $this->input->post('name'),
-                'description' => $this->input->post('description'),
-                'quality' => $this->input->post('quality'),
-                'purpose' => $this->input->post('purpose'),
-                'type' => $this->input->post('type'),
-                'availability' => $this->input->post('availability'),
-            );
-
-            $update = $this->model_items->update($data, $item_id);
-            if ($update == true) {
-                $this->session->set_flashdata('success', 'Předmět byl úspěšně upraven');
-                redirect('items/', 'refresh');
-            } else {
-                $this->session->set_flashdata('errors', 'Nastala chyba!');
-                redirect('items/update/' . $item_id, 'refresh');
-            }
+        $check = $this->model_items->existInItems($item_id);
+        if ($check == false) {
+            $this->session->set_flashdata('error', 'Předmět neexistuje!');
+            redirect('items/', 'refresh');
         } else {
-            $this->render_template('items/edit', $this->data);
+            if ($this->form_validation->run() == TRUE) {
+                $data = array(
+                    'name' => $this->input->post('name'),
+                    'description' => $this->input->post('description'),
+                    'quality' => $this->input->post('quality'),
+                    'purpose' => $this->input->post('purpose'),
+                    'type' => $this->input->post('type'),
+                    'availability' => $this->input->post('availability'),
+                );
+
+                $update = $this->model_items->update($data, $item_id);
+                if ($update == true) {
+                    $this->session->set_flashdata('success', 'Předmět byl úspěšně upraven');
+                    redirect('items/', 'refresh');
+                } else {
+                    $this->session->set_flashdata('errors', 'Nastala chyba!');
+                    redirect('items/update/' . $item_id, 'refresh');
+                }
+            } else {
+                $this->render_template('items/edit', $this->data);
+            }
         }
     }
 
-    public function remove()
+    public function delete()
     {
         if (!in_array('deleteItem', $this->permission)) {
             redirect('dashboard', 'refresh');
@@ -197,14 +206,29 @@ class Items extends Admin_Controller
 
         $response = array();
         if ($item_id) {
-            $delete = $this->model_items->remove($item_id);
-            if ($delete == true) {
-                $response['success'] = true;
-                $response['messages'] = "Předmět byl úspěšně odstraněn";
+            if ($this->model_items->existInNpcs($item_id)) {
+                $response['success'] = false;
+                $response['messages'] = "Nelze odstranit! Předmět je používán NPC!";
+            } else if ($this->model_items->existInCharacters($item_id)) {
+                $response['success'] = false;
+                $response['messages'] = "Nelze odstranit! Předmět je používán postavou!";
+            } else if ($this->model_items->existInCompanions($item_id)) {
+                $response['success'] = false;
+                $response['messages'] = "Nelze odstranit! Předmět je používán společníkem!";
+            } else if ($this->model_items->existInItems($item_id)) {
+                $delete = $this->model_items->delete($item_id);
+                if ($delete == true) {
+                    $response['success'] = true;
+                    $response['messages'] = "Předmět byl úspěšně odstraněn";
+                } else {
+                    $response['success'] = false;
+                    $response['messages'] = "Nastala chyba!";
+                }
             } else {
                 $response['success'] = false;
-                $response['messages'] = "Nastala chyba!";
+                $response['messages'] = "Id nenalezeno!";
             }
+
         } else {
             $response['success'] = false;
             $response['messages'] = "Obnovte prosím stránku";
