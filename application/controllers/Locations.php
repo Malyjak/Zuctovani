@@ -42,6 +42,10 @@ class Locations extends Admin_Controller
 
     public function fetchLocationData()
     {
+        if (!in_array('viewLocation', $this->permission)) {
+            redirect('dashboard', 'refresh');
+        }
+
         $result = array('data' => array());
 
         $data = $this->model_locations->getLocationData();
@@ -53,7 +57,7 @@ class Locations extends Admin_Controller
             }
 
             if (in_array('deleteLocation', $this->permission)) {
-                $buttons .= ' <button type="button" class="btn btn-default" onclick="removeFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button>';
+                $buttons .= ' <button type="button" class="btn btn-default" onclick="deleteFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash"></i></button>';
             }
 
             $terrain = '';
@@ -125,31 +129,36 @@ class Locations extends Admin_Controller
             redirect('dashboard', 'refresh');
         }
 
-        $this->form_validation->set_rules('name', 'name', 'trim|required');
+        if ($this->model_locations->existInLocations($location_id)) {
+            $this->form_validation->set_rules('name', 'name', 'trim|required');
 
-        if ($this->form_validation->run() == TRUE) {
-            $data = array(
-                'name' => $this->input->post('name'),
-                'terrain' => $this->input->post('terrain'),
-                'hidden' => $this->input->post('hidden'),
-                'traps' => $this->input->post('traps'),
-                'description' => $this->input->post('description'),
-            );
+            if ($this->form_validation->run() == TRUE) {
+                $data = array(
+                    'name' => $this->input->post('name'),
+                    'terrain' => $this->input->post('terrain'),
+                    'hidden' => $this->input->post('hidden'),
+                    'traps' => $this->input->post('traps'),
+                    'description' => $this->input->post('description'),
+                );
 
-            $update = $this->model_locations->update($data, $location_id);
-            if ($update == true) {
-                $this->session->set_flashdata('success', 'Lokace byla úspěšně upravena');
-                redirect('locations/', 'refresh');
+                $update = $this->model_locations->update($data, $location_id);
+                if ($update == true) {
+                    $this->session->set_flashdata('success', 'Lokace byla úspěšně upravena');
+                    redirect('locations/', 'refresh');
+                } else {
+                    $this->session->set_flashdata('errors', 'Nastala chyba!');
+                    redirect('locations/update/' . $location_id, 'refresh');
+                }
             } else {
-                $this->session->set_flashdata('errors', 'Nastala chyba!');
-                redirect('locations/update/' . $location_id, 'refresh');
+                $this->render_template('locations/update', $this->data);
             }
         } else {
-            $this->render_template('locations/edit', $this->data);
+            $this->session->set_flashdata('error', 'Lokace neexistuje!');
+            redirect('locations/', 'refresh');
         }
     }
 
-    public function remove()
+    public function delete()
     {
         if (!in_array('deleteLocation', $this->permission)) {
             redirect('dashboard', 'refresh');
@@ -159,13 +168,18 @@ class Locations extends Admin_Controller
 
         $response = array();
         if ($location_id) {
-            $delete = $this->model_locations->remove($location_id);
-            if ($delete == true) {
-                $response['success'] = true;
-                $response['messages'] = "Lokace byla úspěšně odstraněna";
-            } else {
+            if ($this->model_locations->existInLocations($location_id) == FALSE) {
                 $response['success'] = false;
-                $response['messages'] = "Nastala chyba!";
+                $response['messages'] = 'Lokace neexistuje!';
+            } else {
+                $delete = $this->model_locations->delete($location_id);
+                if ($delete == true) {
+                    $response['success'] = true;
+                    $response['messages'] = "Lokace byla úspěšně odstraněna";
+                } else {
+                    $response['success'] = false;
+                    $response['messages'] = "Nastala chyba!";
+                }
             }
         } else {
             $response['success'] = false;

@@ -53,13 +53,20 @@ class Model_locations extends CI_Model
         }
     }
 
-    public function remove($id)
+    public function delete($id)
     {
         if ($id) {
             $this->db->where('id', $id);
             $delete = $this->db->delete('Z_locations');
             return ($delete == true) ? true : false;
         }
+    }
+
+    public function existInLocations($id)
+    {
+        $sql = "SELECT * FROM z_locations WHERE id = ?";
+        $query = $this->db->query($sql, array($id));
+        return ($query->num_rows() == 1) ? true : false;
     }
 
     public function countTotalLocations()

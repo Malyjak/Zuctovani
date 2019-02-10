@@ -53,13 +53,20 @@ class Model_npcs extends CI_Model
         }
     }
 
-    public function remove($id)
+    public function delete($id)
     {
         if ($id) {
             $this->db->where('id', $id);
             $delete = $this->db->delete('Z_npcs');
             return ($delete == true) ? true : false;
         }
+    }
+
+    public function existInNpcs($id)
+    {
+        $sql = "SELECT * FROM z_npcs WHERE id = ?";
+        $query = $this->db->query($sql, array($id));
+        return ($query->num_rows() == 1) ? true : false;
     }
 
     public function countTotalNpcs()

@@ -167,8 +167,7 @@ class Items extends Admin_Controller
         }
 
         $this->form_validation->set_rules('name', 'name', 'trim|required');
-        $check = $this->model_items->existInItems($item_id);
-        if ($check == false) {
+        if ($this->model_items->existInItems($item_id) == FALSE) {
             $this->session->set_flashdata('error', 'Předmět neexistuje!');
             redirect('items/', 'refresh');
         } else {

@@ -45,6 +45,10 @@ class Npcs extends Admin_Controller
 
     public function fetchNpcData()
     {
+        if (!in_array('viewNpc', $this->permission)) {
+            redirect('dashboard', 'refresh');
+        }
+
         $result = array('data' => array());
 
         $data = $this->model_npcs->getNpcData();
@@ -53,11 +57,11 @@ class Npcs extends Admin_Controller
 
             $buttons = '';
             if (in_array('updateNpc', $this->permission)) {
-                $buttons .= '<a href="' . base_url('npcs/view/' . $value['id']) . '" class="btn btn-default"><i class="fa fa-eye"></i></a>';
+                $buttons .= '<a href="' . base_url('npcs/update/' . $value['id']) . '" class="btn btn-default"><i class="fa fa-eye"></i></a>';
             }
 
             if (in_array('deleteNpc', $this->permission)) {
-                $buttons .= ' <button type="button" class="btn btn-default" onclick="removeFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button>';
+                $buttons .= ' <button type="button" class="btn btn-default" onclick="deleteFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash"></i></button>';
             }
 
             $skills = unserialize($value['skills']);
@@ -121,6 +125,10 @@ class Npcs extends Admin_Controller
 
     public function fetchSkillsData($npc_id)
     {
+        if (!in_array('viewNpc', $this->permission)) {
+            redirect('dashboard', 'refresh');
+        }
+
         $result = array('data' => array());
 
         $data = $this->model_npcs->getNpcData($npc_id);
@@ -165,6 +173,10 @@ class Npcs extends Admin_Controller
 
     public function fetchItemsData($npc_id)
     {
+        if (!in_array('viewNpc', $this->permission)) {
+            redirect('dashboard', 'refresh');
+        }
+
         $result = array('data' => array());
 
         $data = $this->model_npcs->getNpcData($npc_id);
@@ -250,35 +262,40 @@ class Npcs extends Admin_Controller
         $response = array();
 
         if ($npc_id) {
-            $this->form_validation->set_rules('name', 'Jméno', 'trim|required');
-            $this->form_validation->set_rules('lvl', 'Lvl', 'trim|required|numeric');
-            $this->form_validation->set_rules('race', 'Rasa', 'trim|required|numeric');
-            $this->form_validation->set_rules('money', 'Stříbrňáky', 'trim|required|numeric');
+            if ($this->model_npcs->existInNpcs($npc_id) == FALSE) {
+                $response['success'] = false;
+                $response['messages'] = 'NPC neexistuje!';
+            } else {
+                $this->form_validation->set_rules('name', 'Jméno', 'trim|required');
+                $this->form_validation->set_rules('lvl', 'Lvl', 'trim|required|numeric');
+                $this->form_validation->set_rules('race', 'Rasa', 'trim|required|numeric');
+                $this->form_validation->set_rules('money', 'Stříbrňáky', 'trim|required|numeric');
 
-            $this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
+                $this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
 
-            if ($this->form_validation->run() == TRUE) {
-                $data = array(
-                    'name' => $this->input->post('name'),
-                    'lvl' => $this->input->post('lvl'),
-                    'race' => $this->input->post('race'),
-                    'gift' => $this->input->post('gift'),
-                    'origin' => $this->input->post('origin'),
-                    'money' => $this->input->post('money'),
-                );
+                if ($this->form_validation->run() == TRUE) {
+                    $data = array(
+                        'name' => $this->input->post('name'),
+                        'lvl' => $this->input->post('lvl'),
+                        'race' => $this->input->post('race'),
+                        'gift' => $this->input->post('gift'),
+                        'origin' => $this->input->post('origin'),
+                        'money' => $this->input->post('money'),
+                    );
 
-                $update = $this->model_npcs->update($data, $npc_id);
-                if ($update == true) {
-                    $response['success'] = true;
-                    $response['messages'] = 'Úspěšně změněno';
+                    $update = $this->model_npcs->update($data, $npc_id);
+                    if ($update == true) {
+                        $response['success'] = true;
+                        $response['messages'] = 'Úspěšně změněno';
+                    } else {
+                        $response['success'] = false;
+                        $response['messages'] = 'Nastala chyba!';
+                    }
                 } else {
                     $response['success'] = false;
-                    $response['messages'] = 'Nastala chyba!';
-                }
-            } else {
-                $response['success'] = false;
-                foreach ($_POST as $key => $value) {
-                    $response['messages'][$key] = form_error($key);
+                    foreach ($_POST as $key => $value) {
+                        $response['messages'][$key] = form_error($key);
+                    }
                 }
             }
         } else {
@@ -298,37 +315,42 @@ class Npcs extends Admin_Controller
         $response = array();
 
         if ($npc_id) {
-            $this->form_validation->set_rules('hp', 'HP', 'trim|required|numeric');
-            $this->form_validation->set_rules('mp', 'MP', 'trim|required|numeric');
-            $this->form_validation->set_rules('sp', 'SP', 'trim|required|numeric');
-            $this->form_validation->set_rules('hp_max', 'Max HP', 'trim|required|numeric');
-            $this->form_validation->set_rules('mp_max', 'Max MP', 'trim|required|numeric');
-            $this->form_validation->set_rules('sp_max', 'Max SP', 'trim|required|numeric');
+            if ($this->model_npcs->existInNpcs($npc_id) == FALSE) {
+                $response['success'] = false;
+                $response['messages'] = 'NPC neexistuje!';
+            } else {
+                $this->form_validation->set_rules('hp', 'HP', 'trim|required|numeric');
+                $this->form_validation->set_rules('mp', 'MP', 'trim|required|numeric');
+                $this->form_validation->set_rules('sp', 'SP', 'trim|required|numeric');
+                $this->form_validation->set_rules('hp_max', 'Max HP', 'trim|required|numeric');
+                $this->form_validation->set_rules('mp_max', 'Max MP', 'trim|required|numeric');
+                $this->form_validation->set_rules('sp_max', 'Max SP', 'trim|required|numeric');
 
-            $this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
+                $this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
 
-            if ($this->form_validation->run() == TRUE) {
-                $data = array(
-                    'hp' => $this->input->post('hp'),
-                    'mp' => $this->input->post('mp'),
-                    'sp' => $this->input->post('sp'),
-                    'hp_max' => $this->input->post('hp_max'),
-                    'mp_max' => $this->input->post('mp_max'),
-                    'sp_max' => $this->input->post('sp_max'),
-                );
+                if ($this->form_validation->run() == TRUE) {
+                    $data = array(
+                        'hp' => $this->input->post('hp'),
+                        'mp' => $this->input->post('mp'),
+                        'sp' => $this->input->post('sp'),
+                        'hp_max' => $this->input->post('hp_max'),
+                        'mp_max' => $this->input->post('mp_max'),
+                        'sp_max' => $this->input->post('sp_max'),
+                    );
 
-                $update = $this->model_npcs->update($data, $npc_id);
-                if ($update == true) {
-                    $response['success'] = true;
-                    $response['messages'] = 'Úspěšně změněno';
+                    $update = $this->model_npcs->update($data, $npc_id);
+                    if ($update == true) {
+                        $response['success'] = true;
+                        $response['messages'] = 'Úspěšně změněno';
+                    } else {
+                        $response['success'] = false;
+                        $response['messages'] = 'Nastala chyba!';
+                    }
                 } else {
                     $response['success'] = false;
-                    $response['messages'] = 'Nastala chyba!';
-                }
-            } else {
-                $response['success'] = false;
-                foreach ($_POST as $key => $value) {
-                    $response['messages'][$key] = form_error($key);
+                    foreach ($_POST as $key => $value) {
+                        $response['messages'][$key] = form_error($key);
+                    }
                 }
             }
         } else {
@@ -348,29 +370,34 @@ class Npcs extends Admin_Controller
         $response = array();
 
         if ($npc_id) {
-            $this->form_validation->set_rules('reflexes', 'Reflexy', 'trim|required|numeric');
-            $this->form_validation->set_rules('initiative', 'Iniciativa', 'trim|required|numeric');
+            if ($this->model_npcs->existInNpcs($npc_id) == FALSE) {
+                $response['success'] = false;
+                $response['messages'] = 'NPC neexistuje!';
+            } else {
+                $this->form_validation->set_rules('reflexes', 'Reflexy', 'trim|required|numeric');
+                $this->form_validation->set_rules('initiative', 'Iniciativa', 'trim|required|numeric');
 
-            $this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
+                $this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
 
-            if ($this->form_validation->run() == TRUE) {
-                $data = array(
-                    'reflexes' => $this->input->post('reflexes'),
-                    'initiative' => $this->input->post('initiative'),
-                );
+                if ($this->form_validation->run() == TRUE) {
+                    $data = array(
+                        'reflexes' => $this->input->post('reflexes'),
+                        'initiative' => $this->input->post('initiative'),
+                    );
 
-                $update = $this->model_npcs->update($data, $npc_id);
-                if ($update == true) {
-                    $response['success'] = true;
-                    $response['messages'] = 'Úspěšně změněno';
+                    $update = $this->model_npcs->update($data, $npc_id);
+                    if ($update == true) {
+                        $response['success'] = true;
+                        $response['messages'] = 'Úspěšně změněno';
+                    } else {
+                        $response['success'] = false;
+                        $response['messages'] = 'Nastala chyba!';
+                    }
                 } else {
                     $response['success'] = false;
-                    $response['messages'] = 'Nastala chyba!';
-                }
-            } else {
-                $response['success'] = false;
-                foreach ($_POST as $key => $value) {
-                    $response['messages'][$key] = form_error($key);
+                    foreach ($_POST as $key => $value) {
+                        $response['messages'][$key] = form_error($key);
+                    }
                 }
             }
         } else {
@@ -390,27 +417,32 @@ class Npcs extends Admin_Controller
         $response = array();
 
         if ($npc_id) {
-            $this->form_validation->set_rules('magic', 'Kouzla/Specializace', 'trim|required');
+            if ($this->model_npcs->existInNpcs($npc_id) == FALSE) {
+                $response['success'] = false;
+                $response['messages'] = 'NPC neexistuje!';
+            } else {
+                $this->form_validation->set_rules('magic', 'Kouzla/Specializace', 'trim|required');
 
-            $this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
+                $this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
 
-            if ($this->form_validation->run() == TRUE) {
-                $data = array(
-                    'magic' => $this->input->post('magic'),
-                );
+                if ($this->form_validation->run() == TRUE) {
+                    $data = array(
+                        'magic' => $this->input->post('magic'),
+                    );
 
-                $update = $this->model_npcs->update($data, $npc_id);
-                if ($update == true) {
-                    $response['success'] = true;
-                    $response['messages'] = 'Úspěšně změněno';
+                    $update = $this->model_npcs->update($data, $npc_id);
+                    if ($update == true) {
+                        $response['success'] = true;
+                        $response['messages'] = 'Úspěšně změněno';
+                    } else {
+                        $response['success'] = false;
+                        $response['messages'] = 'Nastala chyba!';
+                    }
                 } else {
                     $response['success'] = false;
-                    $response['messages'] = 'Nastala chyba!';
-                }
-            } else {
-                $response['success'] = false;
-                foreach ($_POST as $key => $value) {
-                    $response['messages'][$key] = form_error($key);
+                    foreach ($_POST as $key => $value) {
+                        $response['messages'][$key] = form_error($key);
+                    }
                 }
             }
         } else {
@@ -430,40 +462,212 @@ class Npcs extends Admin_Controller
         $response = array();
 
         if ($npc_id) {
-            $this->form_validation->set_rules('skill', 'Dovednost', 'trim|required');
+            if ($this->model_npcs->existInNpcs($npc_id) == FALSE) {
+                $response['success'] = false;
+                $response['messages'] = 'NPC neexistuje!';
+            } else {
+                $this->form_validation->set_rules('skill', 'Dovednost', 'trim|required');
 
-            $this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
+                $this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
 
-            if ($this->form_validation->run() == TRUE) {
-                $npc_data = $this->model_npcs->getNpcData($npc_id);
-                $skills = unserialize($npc_data['skills']);
-                $skills[] = $this->input->post('skill');
+                if ($this->form_validation->run() == TRUE) {
+                    $npc_data = $this->model_npcs->getNpcData($npc_id);
+                    $skills = unserialize($npc_data['skills']);
+                    $skills[] = $this->input->post('skill');
 
-                $skills_lvl = unserialize($npc_data['skills_lvl']);
-                $skills_lvl[] = 6;
+                    $skills_lvl = unserialize($npc_data['skills_lvl']);
+                    $skills_lvl[] = 6;
 
-                $data = array(
-                    'skills' => serialize($skills),
-                    'skills_lvl' => serialize($skills_lvl),
-                );
+                    $data = array(
+                        'skills' => serialize($skills),
+                        'skills_lvl' => serialize($skills_lvl),
+                    );
 
-                $update = $this->model_npcs->update($data, $npc_id);
-                if ($update == true) {
-                    $response['success'] = true;
-                    $response['messages'] = 'Úspěšně přidáno';
+                    $update = $this->model_npcs->update($data, $npc_id);
+                    if ($update == true) {
+                        $response['success'] = true;
+                        $response['messages'] = 'Úspěšně přidáno';
+                    } else {
+                        $response['success'] = false;
+                        $response['messages'] = 'Nastala chyba!';
+                    }
                 } else {
                     $response['success'] = false;
-                    $response['messages'] = 'Nastala chyba!';
-                }
-            } else {
-                $response['success'] = false;
-                foreach ($_POST as $key => $value) {
-                    $response['messages'][$key] = form_error($key);
+                    foreach ($_POST as $key => $value) {
+                        $response['messages'][$key] = form_error($key);
+                    }
                 }
             }
         } else {
             $response['success'] = false;
             $response['messages'] = 'Obnovte prosím stránku';
+        }
+
+        echo json_encode($response);
+    }
+
+    public function addSkillLvl($npc_id)
+    {
+        if (!in_array('updateNpc', $this->permission)) {
+            redirect('dashboard', 'refresh');
+        }
+
+        $response = array();
+        if ($npc_id) {
+            if ($this->model_npcs->existInNpcs($npc_id) == FALSE) {
+                $response['success'] = false;
+                $response['messages'] = 'NPC neexistuje!';
+            } else {
+                $skill_pos = $this->input->post('skill_pos');
+                if ($skill_pos) {
+                    $npc_data = $this->model_npcs->getNpcData($npc_id);
+                    $skills_lvl = unserialize($npc_data['skills_lvl']);
+
+                    if (!empty($skills_lvl)) {
+                        foreach ($skills_lvl as $key => $value) {
+                            if ($key == ($skill_pos - 1)) {
+                                $skills_lvl[$key] = $value + 2;
+                                break;
+                            }
+                        }
+
+                        $data = array(
+                            'skills_lvl' => serialize(array_values($skills_lvl)),
+                        );
+
+                        $update = $this->model_npcs->update($data, $npc_id);
+                        if ($update == true) {
+                            $response['success'] = true;
+                            $response['messages'] = 'Úspěšně přidáno';
+                        } else {
+                            $response['success'] = false;
+                            $response['messages'] = 'Nastala chyba!';
+                        }
+                    }
+                } else {
+                    $response['success'] = false;
+                    $response['messages'] = "Obnovte prosím stránku";
+                }
+            }
+        } else {
+            $response['success'] = false;
+            $response['messages'] = "Obnovte prosím stránku";
+        }
+
+        echo json_encode($response);
+    }
+
+    public function removeSkillLvl($npc_id)
+    {
+        if (!in_array('updateNpc', $this->permission)) {
+            redirect('dashboard', 'refresh');
+        }
+
+        $response = array();
+        if ($npc_id) {
+            if ($this->model_npcs->existInNpcs($npc_id) == FALSE) {
+                $response['success'] = false;
+                $response['messages'] = 'NPC neexistuje!';
+            } else {
+                $skill_pos = $this->input->post('skill_pos');
+                if ($skill_pos) {
+                    $npc_data = $this->model_npcs->getNpcData($npc_id);
+                    $skills_lvl = unserialize($npc_data['skills_lvl']);
+
+                    if (!empty($skills_lvl)) {
+                        $change = true;
+                        foreach ($skills_lvl as $key => $value) {
+                            if ($key == ($skill_pos - 1)) {
+                                if ($value > 6) {
+                                    $skills_lvl[$key] = $value - 2;
+                                    break;
+                                } else {
+                                    $change = false;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if ($change) {
+                            $data = array(
+                                'skills_lvl' => serialize(array_values($skills_lvl)),
+                            );
+
+                            $update = $this->model_npcs->update($data, $npc_id);
+                            if ($update == true) {
+                                $response['success'] = true;
+                                $response['messages'] = 'Úspěšně odebráno';
+                            } else {
+                                $response['success'] = false;
+                                $response['messages'] = 'Nastala chyba!';
+                            }
+                        } else {
+                            $response['success'] = false;
+                            $response['messages'] = 'Počet kostek je již na minimu!';
+                        }
+                    }
+                } else {
+                    $response['success'] = false;
+                    $response['messages'] = "Obnovte prosím stránku";
+                }
+            }
+        } else {
+            $response['success'] = false;
+            $response['messages'] = "Obnovte prosím stránku";
+        }
+
+        echo json_encode($response);
+    }
+
+    public function removeSkill($npc_id)
+    {
+        if (!in_array('updateNpc', $this->permission)) {
+            redirect('dashboard', 'refresh');
+        }
+
+        $response = array();
+        if ($npc_id) {
+            if ($this->model_npcs->existInNpcs($npc_id) == FALSE) {
+                $response['success'] = false;
+                $response['messages'] = 'NPC neexistuje!';
+            } else {
+                $skill_id = $this->input->post('skill_id');
+                if ($skill_id) {
+                    $npc_data = $this->model_npcs->getNpcData($npc_id);
+                    $skills = unserialize($npc_data['skills']);
+                    $skills_lvl = unserialize($npc_data['skills_lvl']);
+
+                    if (!empty($skills)) {
+                        foreach ($skills as $key => $value) {
+                            if ($value == $skill_id) {
+                                unset($skills[$key]);
+                                unset($skills_lvl[$key]);
+                                break;
+                            }
+                        }
+
+                        $data = array(
+                            'skills' => serialize(array_values($skills)),
+                            'skills_lvl' => serialize(array_values($skills_lvl)),
+                        );
+
+                        $update = $this->model_npcs->update($data, $npc_id);
+                        if ($update == true) {
+                            $response['success'] = true;
+                            $response['messages'] = 'Úspěšně odebráno';
+                        } else {
+                            $response['success'] = false;
+                            $response['messages'] = 'Nastala chyba!';
+                        }
+                    }
+                } else {
+                    $response['success'] = false;
+                    $response['messages'] = "Obnovte prosím stránku";
+                }
+            }
+        } else {
+            $response['success'] = false;
+            $response['messages'] = "Obnovte prosím stránku";
         }
 
         echo json_encode($response);
@@ -476,47 +680,218 @@ class Npcs extends Admin_Controller
         }
 
         $response = array();
-
         if ($npc_id) {
-            $this->form_validation->set_rules('item', 'Předmět', 'trim|required');
+            if ($this->model_npcs->existInNpcs($npc_id) == FALSE) {
+                $response['success'] = false;
+                $response['messages'] = 'NPC neexistuje!';
+            } else {
+                $this->form_validation->set_rules('item', 'Předmět', 'trim|required');
 
-            $this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
+                $this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
 
-            if ($this->form_validation->run() == TRUE) {
-                $npc_data = $this->model_npcs->getNpcData($npc_id);
-                $items = unserialize($npc_data['inventory']);
-                $items_qty = unserialize($npc_data['inventory_qty']);
+                if ($this->form_validation->run() == TRUE) {
+                    $npc_data = $this->model_npcs->getNpcData($npc_id);
+                    $items = unserialize($npc_data['inventory']);
+                    $items_qty = unserialize($npc_data['inventory_qty']);
 
-                $item = $this->input->post('item');
-                if (($items !== null) && (false !== $key = array_search($item, $items))) {
-                    $items_qty[$key] = $items_qty[$key] + 1;
-                } else {
-                    $items[] = $this->input->post('item');
-                    $items_qty[] = 1;
-                }
+                    $item = $this->input->post('item');
+                    if (($items !== null) && (false !== $key = array_search($item, $items))) {
+                        $items_qty[$key] = $items_qty[$key] + 1;
+                    } else {
+                        $items[] = $this->input->post('item');
+                        $items_qty[] = 1;
+                    }
 
-                $data = array(
-                    'inventory' => serialize($items),
-                    'inventory_qty' => serialize($items_qty),
-                );
+                    $data = array(
+                        'inventory' => serialize($items),
+                        'inventory_qty' => serialize($items_qty),
+                    );
 
-                $update = $this->model_npcs->update($data, $npc_id);
-                if ($update == true) {
-                    $response['success'] = true;
-                    $response['messages'] = 'Úspěšně přidáno';
+                    $update = $this->model_npcs->update($data, $npc_id);
+                    if ($update == true) {
+                        $response['success'] = true;
+                        $response['messages'] = 'Úspěšně přidáno';
+                    } else {
+                        $response['success'] = false;
+                        $response['messages'] = 'Nastala chyba!';
+                    }
                 } else {
                     $response['success'] = false;
-                    $response['messages'] = 'Nastala chyba!';
-                }
-            } else {
-                $response['success'] = false;
-                foreach ($_POST as $key => $value) {
-                    $response['messages'][$key] = form_error($key);
+                    foreach ($_POST as $key => $value) {
+                        $response['messages'][$key] = form_error($key);
+                    }
                 }
             }
         } else {
             $response['success'] = false;
             $response['messages'] = 'Obnovte prosím stránku';
+        }
+
+        echo json_encode($response);
+    }
+
+    public function addItemQty($npc_id)
+    {
+        if (!in_array('updateNpc', $this->permission)) {
+            redirect('dashboard', 'refresh');
+        }
+
+        $response = array();
+        if ($npc_id) {
+            if ($this->model_npcs->existInNpcs($npc_id) == FALSE) {
+                $response['success'] = false;
+                $response['messages'] = 'NPC neexistuje!';
+            } else {
+                $item_pos = $this->input->post('item_pos');
+                if ($item_pos) {
+                    $npc_data = $this->model_npcs->getNpcData($npc_id);
+                    $items_qty = unserialize($npc_data['inventory_qty']);
+
+                    if (!empty($items_qty)) {
+                        foreach ($items_qty as $key => $value) {
+                            if ($key == ($item_pos - 1)) {
+                                $items_qty[$key] = $value + 1;
+                                break;
+                            }
+                        }
+
+                        $data = array(
+                            'inventory_qty' => serialize(array_values($items_qty)),
+                        );
+
+                        $update = $this->model_npcs->update($data, $npc_id);
+                        if ($update == true) {
+                            $response['success'] = true;
+                            $response['messages'] = 'Úspěšně přidáno';
+                        } else {
+                            $response['success'] = false;
+                            $response['messages'] = 'Nastala chyba!';
+                        }
+                    }
+                } else {
+                    $response['success'] = false;
+                    $response['messages'] = "Obnovte prosím stránku";
+                }
+            }
+        } else {
+            $response['success'] = false;
+            $response['messages'] = "Obnovte prosím stránku";
+        }
+
+        echo json_encode($response);
+    }
+
+    public function removeItemQty($npc_id)
+    {
+        if (!in_array('updateNpc', $this->permission)) {
+            redirect('dashboard', 'refresh');
+        }
+
+        $response = array();
+        if ($npc_id) {
+            if ($this->model_npcs->existInNpcs($npc_id) == FALSE) {
+                $response['success'] = false;
+                $response['messages'] = 'NPC neexistuje!';
+            } else {
+                $item_pos = $this->input->post('item_pos');
+                if ($item_pos) {
+                    $npc_data = $this->model_npcs->getNpcData($npc_id);
+                    $items_qty = unserialize($npc_data['inventory_qty']);
+
+                    if (!empty($items_qty)) {
+                        $change = true;
+                        foreach ($items_qty as $key => $value) {
+                            if ($key == ($item_pos - 1)) {
+                                if ($value > 1) {
+                                    $items_qty[$key] = $value - 1;
+                                    break;
+                                } else {
+                                    $change = false;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if ($change) {
+                            $data = array(
+                                'inventory_qty' => serialize(array_values($items_qty)),
+                            );
+
+                            $update = $this->model_npcs->update($data, $npc_id);
+                            if ($update == true) {
+                                $response['success'] = true;
+                                $response['messages'] = 'Úspěšně odebráno';
+                            } else {
+                                $response['success'] = false;
+                                $response['messages'] = 'Nastala chyba!';
+                            }
+                        } else {
+                            $response['success'] = false;
+                            $response['messages'] = 'Kvantita je již na minimu! Pro odstranění předmětu prosím použijte k tomu určené tlačítko';
+                        }
+                    }
+                } else {
+                    $response['success'] = false;
+                    $response['messages'] = "Obnovte prosím stránku";
+                }
+            }
+        } else {
+            $response['success'] = false;
+            $response['messages'] = "Obnovte prosím stránku";
+        }
+
+        echo json_encode($response);
+    }
+
+    public function removeItem($npc_id)
+    {
+        if (!in_array('updateNpc', $this->permission)) {
+            redirect('dashboard', 'refresh');
+        }
+
+        $response = array();
+        if ($npc_id) {
+            if ($this->model_npcs->existInNpcs($npc_id) == FALSE) {
+                $response['success'] = false;
+                $response['messages'] = 'NPC neexistuje!';
+            } else {
+                $item_id = $this->input->post('item_id');
+                if ($item_id) {
+                    $npc_data = $this->model_npcs->getNpcData($npc_id);
+                    $items = unserialize($npc_data['inventory']);
+                    $items_qty = unserialize($npc_data['inventory_qty']);
+
+                    if (!empty($items)) {
+                        foreach ($items as $key => $value) {
+                            if ($value == $item_id) {
+                                unset($items[$key]);
+                                unset($items_qty[$key]);
+                                break;
+                            }
+                        }
+
+                        $data = array(
+                            'inventory' => serialize(array_values($items)),
+                            'inventory_qty' => serialize(array_values($items_qty)),
+                        );
+
+                        $update = $this->model_npcs->update($data, $npc_id);
+                        if ($update == true) {
+                            $response['success'] = true;
+                            $response['messages'] = 'Úspěšně odebráno';
+                        } else {
+                            $response['success'] = false;
+                            $response['messages'] = 'Nastala chyba!';
+                        }
+                    }
+                } else {
+                    $response['success'] = false;
+                    $response['messages'] = "Obnovte prosím stránku";
+                }
+            }
+        } else {
+            $response['success'] = false;
+            $response['messages'] = "Obnovte prosím stránku";
         }
 
         echo json_encode($response);
@@ -578,37 +953,25 @@ class Npcs extends Admin_Controller
         }
     }
 
-    public function view($npc_id)
+    public function update($npc_id)
     {
         if (!in_array('updateNpc', $this->permission)) {
             redirect('dashboard', 'refresh');
         }
 
         if (!$npc_id) {
-            redirect('dashboard', 'refresh');
+            redirect('npcs/', 'refresh');
         }
 
-        $this->form_validation->set_rules('name', 'name', 'trim|required');
-
-        if ($this->form_validation->run() == TRUE) {
-            $data = array(
-                'name' => $this->input->post('name'),
-            );
-
-            $update = $this->model_npcs->update($data, $npc_id);
-            if ($update == true) {
-                $this->session->set_flashdata('success', 'NPC bylo úspěšně upraveno');
-                redirect('npcs/', 'refresh');
-            } else {
-                $this->session->set_flashdata('errors', 'Nastala chyba!');
-                redirect('npcs/view/' . $npc_id, 'refresh');
-            }
+        if ($this->model_npcs->existInNpcs($npc_id)) {
+            $this->render_template('npcs/update', $this->data);
         } else {
-            $this->render_template('npcs/view', $this->data);
+            $this->session->set_flashdata('error', 'NPC neexistuje!');
+            redirect('npcs/', 'refresh');
         }
     }
 
-    public function remove()
+    public function delete()
     {
         if (!in_array('deleteNpc', $this->permission)) {
             redirect('dashboard', 'refresh');
@@ -618,292 +981,17 @@ class Npcs extends Admin_Controller
 
         $response = array();
         if ($npc_id) {
-            $delete = $this->model_npcs->remove($npc_id);
-            if ($delete == true) {
-                $response['success'] = true;
-                $response['messages'] = "NPC bylo úspěšně odstraněno";
-            } else {
+            if ($this->model_npcs->existInNpcs($npc_id) == FALSE) {
                 $response['success'] = false;
-                $response['messages'] = "Nastala chyba!";
-            }
-        } else {
-            $response['success'] = false;
-            $response['messages'] = "Obnovte prosím stránku";
-        }
-
-        echo json_encode($response);
-    }
-
-    public function addSkillLvl($npc_id)
-    {
-        if (!in_array('updateNpc', $this->permission)) {
-            redirect('dashboard', 'refresh');
-        }
-
-        $skill_pos = $this->input->post('skill_pos');
-
-        $response = array();
-        if ($skill_pos) {
-            $npc_data = $this->model_npcs->getNpcData($npc_id);
-            $skills_lvl = unserialize($npc_data['skills_lvl']);
-
-            if (!empty($skills_lvl)) {
-                foreach ($skills_lvl as $key => $value) {
-                    if ($key == ($skill_pos - 1)) {
-                        $skills_lvl[$key] = $value + 2;
-                        break;
-                    }
-                }
-
-                $data = array(
-                    'skills_lvl' => serialize(array_values($skills_lvl)),
-                );
-
-                $update = $this->model_npcs->update($data, $npc_id);
-                if ($update == true) {
+                $response['messages'] = 'NPC neexistuje!';
+            } else {
+                $delete = $this->model_npcs->delete($npc_id);
+                if ($delete == true) {
                     $response['success'] = true;
-                    $response['messages'] = 'Úspěšně přidáno';
+                    $response['messages'] = "NPC bylo úspěšně odstraněno";
                 } else {
                     $response['success'] = false;
-                    $response['messages'] = 'Nastala chyba!';
-                }
-            }
-        } else {
-            $response['success'] = false;
-            $response['messages'] = "Obnovte prosím stránku";
-        }
-
-        echo json_encode($response);
-    }
-
-    public function removeSkillLvl($npc_id)
-    {
-        if (!in_array('updateNpc', $this->permission)) {
-            redirect('dashboard', 'refresh');
-        }
-
-        $skill_pos = $this->input->post('skill_pos');
-
-        $response = array();
-        if ($skill_pos) {
-            $npc_data = $this->model_npcs->getNpcData($npc_id);
-            $skills_lvl = unserialize($npc_data['skills_lvl']);
-
-            if (!empty($skills_lvl)) {
-                $change = true;
-                foreach ($skills_lvl as $key => $value) {
-                    if ($key == ($skill_pos - 1)) {
-                        if ($value > 6) {
-                            $skills_lvl[$key] = $value - 2;
-                            break;
-                        } else {
-                            $change = false;
-                            break;
-                        }
-                    }
-                }
-
-                if ($change) {
-                    $data = array(
-                        'skills_lvl' => serialize(array_values($skills_lvl)),
-                    );
-
-                    $update = $this->model_npcs->update($data, $npc_id);
-                    if ($update == true) {
-                        $response['success'] = true;
-                        $response['messages'] = 'Úspěšně odebráno';
-                    } else {
-                        $response['success'] = false;
-                        $response['messages'] = 'Nastala chyba!';
-                    }
-                } else {
-                    $response['success'] = false;
-                    $response['messages'] = 'Počet kostek je již na minimu!';
-                }
-            }
-        } else {
-            $response['success'] = false;
-            $response['messages'] = "Obnovte prosím stránku";
-        }
-
-        echo json_encode($response);
-    }
-
-    public function removeSkill($npc_id)
-    {
-        if (!in_array('updateNpc', $this->permission)) {
-            redirect('dashboard', 'refresh');
-        }
-
-        $skill_id = $this->input->post('skill_id');
-
-        $response = array();
-        if ($skill_id) {
-            $npc_data = $this->model_npcs->getNpcData($npc_id);
-            $skills = unserialize($npc_data['skills']);
-            $skills_lvl = unserialize($npc_data['skills_lvl']);
-
-            if (!empty($skills)) {
-                foreach ($skills as $key => $value) {
-                    if ($value == $skill_id) {
-                        unset($skills[$key]);
-                        unset($skills_lvl[$key]);
-                        break;
-                    }
-                }
-
-                $data = array(
-                    'skills' => serialize(array_values($skills)),
-                    'skills_lvl' => serialize(array_values($skills_lvl)),
-                );
-
-                $update = $this->model_npcs->update($data, $npc_id);
-                if ($update == true) {
-                    $response['success'] = true;
-                    $response['messages'] = 'Úspěšně odebráno';
-                } else {
-                    $response['success'] = false;
-                    $response['messages'] = 'Nastala chyba!';
-                }
-            }
-        } else {
-            $response['success'] = false;
-            $response['messages'] = "Obnovte prosím stránku";
-        }
-
-        echo json_encode($response);
-    }
-
-    public function addItemQty($npc_id)
-    {
-        if (!in_array('updateNpc', $this->permission)) {
-            redirect('dashboard', 'refresh');
-        }
-
-        $item_pos = $this->input->post('item_pos');
-
-        $response = array();
-        if ($item_pos) {
-            $npc_data = $this->model_npcs->getNpcData($npc_id);
-            $items_qty = unserialize($npc_data['inventory_qty']);
-
-            if (!empty($items_qty)) {
-                foreach ($items_qty as $key => $value) {
-                    if ($key == ($item_pos - 1)) {
-                        $items_qty[$key] = $value + 1;
-                        break;
-                    }
-                }
-
-                $data = array(
-                    'inventory_qty' => serialize(array_values($items_qty)),
-                );
-
-                $update = $this->model_npcs->update($data, $npc_id);
-                if ($update == true) {
-                    $response['success'] = true;
-                    $response['messages'] = 'Úspěšně přidáno';
-                } else {
-                    $response['success'] = false;
-                    $response['messages'] = 'Nastala chyba!';
-                }
-            }
-        } else {
-            $response['success'] = false;
-            $response['messages'] = "Obnovte prosím stránku";
-        }
-
-        echo json_encode($response);
-    }
-
-    public function removeItemQty($npc_id)
-    {
-        if (!in_array('updateNpc', $this->permission)) {
-            redirect('dashboard', 'refresh');
-        }
-
-        $item_pos = $this->input->post('item_pos');
-
-        $response = array();
-        if ($item_pos) {
-            $npc_data = $this->model_npcs->getNpcData($npc_id);
-            $items_qty = unserialize($npc_data['inventory_qty']);
-
-            if (!empty($items_qty)) {
-                $change = true;
-                foreach ($items_qty as $key => $value) {
-                    if ($key == ($item_pos - 1)) {
-                        if ($value > 1) {
-                            $items_qty[$key] = $value - 1;
-                            break;
-                        } else {
-                            $change = false;
-                            break;
-                        }
-                    }
-                }
-
-                if ($change) {
-                    $data = array(
-                        'inventory_qty' => serialize(array_values($items_qty)),
-                    );
-
-                    $update = $this->model_npcs->update($data, $npc_id);
-                    if ($update == true) {
-                        $response['success'] = true;
-                        $response['messages'] = 'Úspěšně odebráno';
-                    } else {
-                        $response['success'] = false;
-                        $response['messages'] = 'Nastala chyba!';
-                    }
-                } else {
-                    $response['success'] = false;
-                    $response['messages'] = 'Kvantita je již na minimu! Pro odstranění předmětu prosím použijte k tomu určené tlačítko';
-                }
-            }
-        } else {
-            $response['success'] = false;
-            $response['messages'] = "Obnovte prosím stránku";
-        }
-
-        echo json_encode($response);
-    }
-
-    public function removeItem($npc_id)
-    {
-        if (!in_array('updateNpc', $this->permission)) {
-            redirect('dashboard', 'refresh');
-        }
-
-        $item_id = $this->input->post('item_id');
-
-        $response = array();
-        if ($item_id) {
-            $npc_data = $this->model_npcs->getNpcData($npc_id);
-            $items = unserialize($npc_data['inventory']);
-            $items_qty = unserialize($npc_data['inventory_qty']);
-
-            if (!empty($items)) {
-                foreach ($items as $key => $value) {
-                    if ($value == $item_id) {
-                        unset($items[$key]);
-                        unset($items_qty[$key]);
-                        break;
-                    }
-                }
-
-                $data = array(
-                    'inventory' => serialize(array_values($items)),
-                    'inventory_qty' => serialize(array_values($items_qty)),
-                );
-
-                $update = $this->model_npcs->update($data, $npc_id);
-                if ($update == true) {
-                    $response['success'] = true;
-                    $response['messages'] = 'Úspěšně odebráno';
-                } else {
-                    $response['success'] = false;
-                    $response['messages'] = 'Nastala chyba!';
+                    $response['messages'] = "Nastala chyba!";
                 }
             }
         } else {

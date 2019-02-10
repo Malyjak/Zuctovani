@@ -45,127 +45,124 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                     </div>
                 <?php endif; ?>
                 <div class="box">
-                    <form role="form" action="<?php base_url('npcs/view') ?>" method="post"
-                          enctype="multipart/form-data">
-                        <div class="box-body">
-                            <?php echo validation_errors(); ?>
-                            <?php
-                            $link = $_SERVER['PHP_SELF'];
-                            $link_array = explode('/', $link);
-                            $npc_id = end($link_array);
-                            if ($npc_id) {
-                                $npc_data = $this->model_npcs->getNpcData($npc_id);
+                    <div class="box-body">
+                        <?php echo validation_errors(); ?>
+                        <?php
+                        $link = $_SERVER['PHP_SELF'];
+                        $link_array = explode('/', $link);
+                        $npc_id = end($link_array);
+                        if ($npc_id) {
+                            $npc_data = $this->model_npcs->getNpcData($npc_id);
 
-                                $skills = $this->model_skills->getSkillData();
-                                $items = $this->model_items->getItemData();
-                                $races = $this->model_races->getRaceData();
+                            $skills = $this->model_skills->getSkillData();
+                            $items = $this->model_items->getItemData();
+                            $races = $this->model_races->getRaceData();
 
-                                $skills_npc = $npc_data['skills'];
-                                $race_npc = $this->model_races->getRaceData($npc_data['race']);
-                            }
-                            ?>
-                            <div class="row">
-                                <div class="col-lg-6 col-xs-6">
-                                    <div class="small-box bg-aqua">
-                                        <div class="inner" id="nameList">
-                                            <h3><?php echo $npc_data['name']; ?></h3>
-                                            <h4>Lvl: <?php echo $npc_data['lvl']; ?></h4>
-                                            <h4><?php echo $npc_data['money']; ?> Stříbrňáků</h4>
-                                            <br>
-                                            <h4>Rasa: <?php echo $race_npc['name']; ?></h4>
-                                            <br>
-                                            <h4>Dar: <?php echo $npc_data['gift']; ?></h4>
-                                            <br>
-                                            <h4>Původ: <?php echo $npc_data['origin']; ?></h4>
-                                        </div>
-                                        <div class="icon">
-                                            <i class="ion ion-social-freebsd-devil"></i>
-                                        </div>
-                                        <a class="small-box-footer" data-toggle="modal" data-target="#editNameModal">Upravit
-                                            <i class="fa fa-pencil"></i></a>
+                            $skills_npc = $npc_data['skills'];
+                            $race_npc = $this->model_races->getRaceData($npc_data['race']);
+                        }
+                        ?>
+                        <div class="row">
+                            <div class="col-lg-6 col-xs-6">
+                                <div class="small-box bg-aqua">
+                                    <div class="inner" id="nameList">
+                                        <h3><?php echo $npc_data['name']; ?></h3>
+                                        <h4>Lvl: <?php echo $npc_data['lvl']; ?></h4>
+                                        <h4><?php echo $npc_data['money']; ?> Stříbrňáků</h4>
+                                        <br>
+                                        <h4>Rasa: <?php echo $race_npc['name']; ?></h4>
+                                        <br>
+                                        <h4>Dar: <?php echo $npc_data['gift']; ?></h4>
+                                        <br>
+                                        <h4>Původ: <?php echo $npc_data['origin']; ?></h4>
                                     </div>
-                                    <div class="small-box bg-red">
-                                        <div class="inner" id="hpList">
-                                            <h3>HP: <?php echo $npc_data['hp'] . "/" . $npc_data['hp_max']; ?></h3>
-                                            <h4>MP: <?php echo $npc_data['mp'] . "/" . $npc_data['mp_max']; ?></h4>
-                                            <h4>SP: <?php echo $npc_data['sp'] . "/" . $npc_data['sp_max']; ?></h4>
-                                        </div>
-                                        <div class="icon">
-                                            <i class="ion ion-arrow-graph-up-right"></i>
-                                        </div>
-                                        <a class="small-box-footer" data-toggle="modal" data-target="#editHpModal">Upravit
-                                            <i class="fa fa-pencil"></i></a>
+                                    <div class="icon">
+                                        <i class="ion ion-social-freebsd-devil"></i>
                                     </div>
-                                    <div class="small-box bg-yellow">
-                                        <div class="inner">
-                                            <div id="reflexesList">
-                                                <h4>Reflexy: <?php echo $npc_data['reflexes']; ?></h4>
-                                                <h4>Iniciativa: <?php echo $npc_data['initiative']; ?></h4>
-                                            </div>
-                                        </div>
-                                        <div class="icon">
-                                            <i class="ion ion-eye"></i>
-                                        </div>
-                                        <a class="small-box-footer" data-toggle="modal"
-                                           data-target="#editReflexesModal">Upravit <i class="fa fa-pencil"></i></a>
-                                    </div>
-                                    <div class="small-box bg-blue">
-                                        <div class="inner">
-                                            <h3>Kouzla/Specializace</h3>
-                                            <div id="magicList">
-                                                <h4><?php echo $npc_data['magic']; ?></h4>
-                                            </div>
-                                        </div>
-                                        <div class="icon">
-                                            <i class="ion ion-wand"></i>
-                                        </div>
-                                        <a class="small-box-footer" data-toggle="modal" data-target="#editMagicModal">Upravit
-                                            <i class="fa fa-pencil"></i></a>
-                                    </div>
+                                    <a class="small-box-footer" data-toggle="modal" data-target="#editNameModal">Upravit
+                                        <i class="fa fa-pencil"></i></a>
                                 </div>
-                                <div class="col-lg-6 col-xs-6">
-                                    <h3>Dovednosti</h3>
-                                    <a class="btn btn-primary" data-toggle="modal" data-target="#addSkillModal"><i
-                                                class="fa fa-plus"></i> Přidat dovednost</a>
-                                    <br/> <br/>
-                                    <table id="skillsTable" class="table table-bordered table-striped">
-                                        <thead>
-                                        <tr>
-                                            <th>Název</th>
-                                            <th>Kostky (lvl)</th>
-                                            <th>Atribut</th>
-                                            <th>Detailní popis</th>
-                                            <th>Akce</th>
-                                        </tr>
-                                        </thead>
-                                    </table>
-                                    <h3>Inventář</h3>
-                                    <a class="btn btn-primary" data-toggle="modal" data-target="#addItemModal"><i
-                                                class="fa fa-plus"></i> Přidat předmět</a>
-                                    <br/> <br/>
-                                    <table id="itemsTable" class="table table-bordered table-striped">
-                                        <thead>
-                                        <tr>
-                                            <th>Název</th>
-                                            <th>Kvalita</th>
-                                            <th>Účel</th>
-                                            <th>Typ</th>
-                                            <th>Popis</th>
-                                            <th>x</th>
-                                            <th>Akce</th>
-                                        </tr>
-                                        </thead>
-                                    </table>
+                                <div class="small-box bg-red">
+                                    <div class="inner" id="hpList">
+                                        <h3>HP: <?php echo $npc_data['hp'] . "/" . $npc_data['hp_max']; ?></h3>
+                                        <h4>MP: <?php echo $npc_data['mp'] . "/" . $npc_data['mp_max']; ?></h4>
+                                        <h4>SP: <?php echo $npc_data['sp'] . "/" . $npc_data['sp_max']; ?></h4>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="ion ion-arrow-graph-up-right"></i>
+                                    </div>
+                                    <a class="small-box-footer" data-toggle="modal" data-target="#editHpModal">Upravit
+                                        <i class="fa fa-pencil"></i></a>
+                                </div>
+                                <div class="small-box bg-yellow">
+                                    <div class="inner">
+                                        <div id="reflexesList">
+                                            <h4>Reflexy: <?php echo $npc_data['reflexes']; ?></h4>
+                                            <h4>Iniciativa: <?php echo $npc_data['initiative']; ?></h4>
+                                        </div>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="ion ion-eye"></i>
+                                    </div>
+                                    <a class="small-box-footer" data-toggle="modal"
+                                       data-target="#editReflexesModal">Upravit <i class="fa fa-pencil"></i></a>
+                                </div>
+                                <div class="small-box bg-blue">
+                                    <div class="inner">
+                                        <h3>Kouzla/Specializace</h3>
+                                        <div id="magicList">
+                                            <h4><?php echo $npc_data['magic']; ?></h4>
+                                        </div>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="ion ion-wand"></i>
+                                    </div>
+                                    <a class="small-box-footer" data-toggle="modal" data-target="#editMagicModal">Upravit
+                                        <i class="fa fa-pencil"></i></a>
                                 </div>
                             </div>
-                            <div class="box-footer">
-                                <a href="<?php echo base_url('npcs/') ?>" class="btn btn-success">Zpět na přehled
-                                    NPC</a>
+                            <div class="col-lg-6 col-xs-6">
+                                <h3>Dovednosti</h3>
+                                <a class="btn btn-primary" data-toggle="modal" data-target="#addSkillModal"><i
+                                            class="fa fa-plus"></i> Přidat dovednost</a>
+                                <br/> <br/>
+                                <table id="skillsTable" class="table table-bordered table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Název</th>
+                                        <th>Kostky (lvl)</th>
+                                        <th>Atribut</th>
+                                        <th>Detailní popis</th>
+                                        <th>Akce</th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                                <h3>Inventář</h3>
+                                <a class="btn btn-primary" data-toggle="modal" data-target="#addItemModal"><i
+                                            class="fa fa-plus"></i> Přidat předmět</a>
+                                <br/> <br/>
+                                <table id="itemsTable" class="table table-bordered table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Název</th>
+                                        <th>Kvalita</th>
+                                        <th>Účel</th>
+                                        <th>Typ</th>
+                                        <th>Popis</th>
+                                        <th>x</th>
+                                        <th>Akce</th>
+                                    </tr>
+                                    </thead>
+                                </table>
                             </div>
-                    </form>
+                        </div>
+                        <div class="box-footer">
+                            <a href="<?php echo base_url('npcs/') ?>" class="btn btn-success">Zpět na přehled
+                                NPC</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
     </section>
 </div>
 
@@ -248,7 +245,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                             <div class="form-group">
                                 <label for="mp">MP</label>
                                 <input type="number" class="form-control" id="mp" name="mp"
-                                       value="<?php echo $npc_data['mp']; ?>" autocomplete="off" required>
+                                       value="<?php echo $npc_data['mp']; ?>" autocomplete="nope" required>
                             </div>
                             <div class="form-group">
                                 <label for="sp">SP</label>

@@ -79,8 +79,7 @@ class Groups extends Admin_Controller
 
         if ($id) {
             $this->form_validation->set_rules('group_name', 'Group name', 'required');
-            $check = $this->model_groups->existInGroups($id);
-            if ($check == false) {
+            if ($this->model_groups->existInGroups($id) == FALSE) {
                 $this->session->set_flashdata('error', 'Skupina neexistuje!');
                 redirect('groups/', 'refresh');
             } else {
