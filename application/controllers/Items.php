@@ -163,14 +163,14 @@ class Items extends Admin_Controller
         }
 
         if (!$item_id) {
-            redirect('dashboard', 'refresh');
+            redirect('items', 'refresh');
         }
 
-        $this->form_validation->set_rules('name', 'name', 'trim|required');
         if ($this->model_items->existInItems($item_id) == FALSE) {
             $this->session->set_flashdata('error', 'Předmět neexistuje!');
-            redirect('items/', 'refresh');
+            redirect('items', 'refresh');
         } else {
+            $this->form_validation->set_rules('name', 'name', 'trim|required');
             if ($this->form_validation->run() == TRUE) {
                 $data = array(
                     'name' => $this->input->post('name'),
@@ -184,7 +184,7 @@ class Items extends Admin_Controller
                 $update = $this->model_items->update($data, $item_id);
                 if ($update == true) {
                     $this->session->set_flashdata('success', 'Předmět byl úspěšně upraven');
-                    redirect('items/', 'refresh');
+                    redirect('items', 'refresh');
                 } else {
                     $this->session->set_flashdata('errors', 'Nastala chyba!');
                     redirect('items/update/' . $item_id, 'refresh');
@@ -227,7 +227,6 @@ class Items extends Admin_Controller
                 $response['success'] = false;
                 $response['messages'] = "Id nenalezeno!";
             }
-
         } else {
             $response['success'] = false;
             $response['messages'] = "Obnovte prosím stránku";

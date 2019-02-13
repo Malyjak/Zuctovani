@@ -940,7 +940,7 @@ class Npcs extends Admin_Controller
             $create = $this->model_npcs->create($data);
             if ($create == true) {
                 $this->session->set_flashdata('success', 'NPC bylo úspěšně vytvořeno');
-                redirect('npcs/', 'refresh');
+                redirect('npcs', 'refresh');
             } else {
                 $this->session->set_flashdata('errors', 'Nastala chyba!');
                 redirect('npcs/create', 'refresh');
@@ -960,14 +960,14 @@ class Npcs extends Admin_Controller
         }
 
         if (!$npc_id) {
-            redirect('npcs/', 'refresh');
+            redirect('npcs', 'refresh');
         }
 
         if ($this->model_npcs->existInNpcs($npc_id)) {
             $this->render_template('npcs/update', $this->data);
         } else {
             $this->session->set_flashdata('error', 'NPC neexistuje!');
-            redirect('npcs/', 'refresh');
+            redirect('npcs', 'refresh');
         }
     }
 

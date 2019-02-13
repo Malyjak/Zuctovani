@@ -168,7 +168,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                                         <td>Změna údajů</td>
                                         <td> -</td>
                                         <td><input type="checkbox" name="permission[]" id="permission"
-                                                   value="updateSetting" class="minimal"></td>
+                                                   value="updateSettings" class="minimal"></td>
                                         <td> -</td>
                                         <td> -</td>
                                     </tr>

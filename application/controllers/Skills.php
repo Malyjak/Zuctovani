@@ -42,6 +42,10 @@ class Skills extends Admin_Controller
 
     public function fetchSkillData()
     {
+        if (!in_array('viewSkill', $this->permission)) {
+            redirect('dashboard', 'refresh');
+        }
+
         $result = array('data' => array());
 
         $data = $this->model_skills->getSkillData();
@@ -66,7 +70,7 @@ class Skills extends Admin_Controller
             }
 
             if (in_array('deleteSkill', $this->permission)) {
-                $buttons .= ' <button type="button" class="btn btn-default" onclick="removeFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button>';
+                $buttons .= ' <button type="button" class="btn btn-default" onclick="deleteFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash"></i></button>';
             }
 
             $result['data'][$key] = array(
@@ -98,7 +102,7 @@ class Skills extends Admin_Controller
             $create = $this->model_skills->create($data);
             if ($create == true) {
                 $this->session->set_flashdata('success', 'Dovednost byla úspěšně vytvořena');
-                redirect('skills/', 'refresh');
+                redirect('skills', 'refresh');
             } else {
                 $this->session->set_flashdata('errors', 'Nastala chyba!');
                 redirect('skills/create', 'refresh');
@@ -115,32 +119,37 @@ class Skills extends Admin_Controller
         }
 
         if (!$skill_id) {
-            redirect('dashboard', 'refresh');
+            redirect('skills', 'refresh');
         }
 
-        $this->form_validation->set_rules('name', 'name', 'trim|required');
-
-        if ($this->form_validation->run() == TRUE) {
-            $data = array(
-                'name' => $this->input->post('name'),
-                'attribute' => $this->input->post('attribute'),
-                'description' => $this->input->post('description'),
-            );
-
-            $update = $this->model_skills->update($data, $skill_id);
-            if ($update == true) {
-                $this->session->set_flashdata('success', 'Dovednost byla úspěšně upravena');
-                redirect('skills/', 'refresh');
-            } else {
-                $this->session->set_flashdata('errors', 'Nastala chyba!');
-                redirect('skills/update/' . $skill_id, 'refresh');
-            }
+        if ($this->model_skills->existInSkills($skill_id) == FALSE) {
+            $this->session->set_flashdata('error', 'Dovednost neexistuje!');
+            redirect('skills', 'refresh');
         } else {
-            $this->render_template('skills/edit', $this->data);
+            $this->form_validation->set_rules('name', 'name', 'trim|required');
+
+            if ($this->form_validation->run() == TRUE) {
+                $data = array(
+                    'name' => $this->input->post('name'),
+                    'attribute' => $this->input->post('attribute'),
+                    'description' => $this->input->post('description'),
+                );
+
+                $update = $this->model_skills->update($data, $skill_id);
+                if ($update == true) {
+                    $this->session->set_flashdata('success', 'Dovednost byla úspěšně upravena');
+                    redirect('skills', 'refresh');
+                } else {
+                    $this->session->set_flashdata('errors', 'Nastala chyba!');
+                    redirect('skills/update/' . $skill_id, 'refresh');
+                }
+            } else {
+                $this->render_template('skills/update', $this->data);
+            }
         }
     }
 
-    public function remove()
+    public function delete()
     {
         if (!in_array('deleteSkill', $this->permission)) {
             redirect('dashboard', 'refresh');
@@ -150,13 +159,27 @@ class Skills extends Admin_Controller
 
         $response = array();
         if ($skill_id) {
-            $delete = $this->model_skills->remove($skill_id);
-            if ($delete == true) {
-                $response['success'] = true;
-                $response['messages'] = "Dovednost byla úspěšně odstraněna";
+            if ($this->model_skills->existInNpcs($skill_id)) {
+                $response['success'] = false;
+                $response['messages'] = "Nelze odstranit! Dovednost je používána NPC!";
+            } else if ($this->model_skills->existInCharacters($skill_id)) {
+                $response['success'] = false;
+                $response['messages'] = "Nelze odstranit! Dovednost je používána postavou!";
+            } else if ($this->model_skills->existInCompanions($skill_id)) {
+                $response['success'] = false;
+                $response['messages'] = "Nelze odstranit! Dovednost je používána společníkem!";
+            } else if ($this->model_skills->existInSkills($skill_id)) {
+                $delete = $this->model_skills->delete($skill_id);
+                if ($delete == true) {
+                    $response['success'] = true;
+                    $response['messages'] = "Dovednost byla úspěšně odstraněna";
+                } else {
+                    $response['success'] = false;
+                    $response['messages'] = "Nastala chyba!";
+                }
             } else {
                 $response['success'] = false;
-                $response['messages'] = "Nastala chyba!";
+                $response['messages'] = "Id nenalezeno!";
             }
         } else {
             $response['success'] = false;

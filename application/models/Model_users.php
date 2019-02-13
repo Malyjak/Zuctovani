@@ -69,13 +69,12 @@ class Model_users extends CI_Model
         }
     }
 
-    public function edit($data = array(), $id = null, $group_id = null)
+    public function update($data = array(), $id = null, $group_id = null)
     {
         $this->db->where('id', $id);
         $update = $this->db->update('Z_users', $data);
 
         if ($group_id) {
-            // user group
             $update_user_group = array('group_id' => $group_id);
             $this->db->where('user_id', $id);
             $user_group = $this->db->update('Z_user_group', $update_user_group);
@@ -90,23 +89,28 @@ class Model_users extends CI_Model
         $this->db->where('id', $id);
         $delete = $this->db->delete('Z_users');
 
-        $this->db->where('user_id', $id);
-        $delete = $this->db->delete('Z_user_group');
-        return ($delete == true) ? true : false;
+        if ($delete == true) {
+            $this->db->where('user_id', $id);
+            $delete = $this->db->delete('Z_user_group');
+            return ($delete == true) ? true : false;
+        } else {
+            return false;
+        }
+    }
+
+    public function existInUsers($id)
+    {
+        $sql = "SELECT * FROM z_users WHERE id = ?";
+        $query = $this->db->query($sql, array($id));
+        return ($query->num_rows() == 1) ? true : false;
     }
 
     public function countTotalUsers()
     {
         $sql = "SELECT * FROM z_users";
         $query = $this->db->query($sql);
-        return $query->num_rows();
-    }
-
-    public function countTotalPlayers()
-    {
-        $sql = "SELECT * FROM z_user_group WHERE group_id = 3";
-        $query = $this->db->query($sql);
-        return $query->num_rows();
+        // number of users without admin account
+        return $query->num_rows() - 1;
     }
 
 }

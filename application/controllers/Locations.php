@@ -109,7 +109,7 @@ class Locations extends Admin_Controller
             $create = $this->model_locations->create($data);
             if ($create == true) {
                 $this->session->set_flashdata('success', 'Lokace byla úspěšně vytvořena');
-                redirect('locations/', 'refresh');
+                redirect('locations', 'refresh');
             } else {
                 $this->session->set_flashdata('errors', 'Nastala chyba!');
                 redirect('locations/create', 'refresh');
@@ -126,7 +126,7 @@ class Locations extends Admin_Controller
         }
 
         if (!$location_id) {
-            redirect('dashboard', 'refresh');
+            redirect('locations', 'refresh');
         }
 
         if ($this->model_locations->existInLocations($location_id)) {
@@ -144,7 +144,7 @@ class Locations extends Admin_Controller
                 $update = $this->model_locations->update($data, $location_id);
                 if ($update == true) {
                     $this->session->set_flashdata('success', 'Lokace byla úspěšně upravena');
-                    redirect('locations/', 'refresh');
+                    redirect('locations', 'refresh');
                 } else {
                     $this->session->set_flashdata('errors', 'Nastala chyba!');
                     redirect('locations/update/' . $location_id, 'refresh');
@@ -154,7 +154,7 @@ class Locations extends Admin_Controller
             }
         } else {
             $this->session->set_flashdata('error', 'Lokace neexistuje!');
-            redirect('locations/', 'refresh');
+            redirect('locations', 'refresh');
         }
     }
 

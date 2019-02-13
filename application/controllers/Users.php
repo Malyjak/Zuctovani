@@ -51,27 +51,34 @@ class Users extends Admin_Controller
         $this->render_template('users/index', $this->data);
     }
 
+    public function password_hash($pass = '')
+    {
+        if ($pass) {
+            $password = password_hash($pass, PASSWORD_DEFAULT);
+            return $password;
+        }
+    }
+
     public function create()
     {
         if (!in_array('createUser', $this->permission)) {
             redirect('dashboard', 'refresh');
         }
 
-        $this->form_validation->set_rules('groups', 'Skupina', 'required');
+        $this->form_validation->set_rules('group', 'Skupina', 'required');
         $this->form_validation->set_rules('name', 'Jméno', 'trim|required|min_length[3]|max_length[12]|is_unique[z_users.username]');
         $this->form_validation->set_rules('email', 'Email', 'trim|required|is_unique[z_users.email]');
         $this->form_validation->set_rules('password', 'Heslo', 'trim|required|min_length[3]|max_length[20]');
-        $this->form_validation->set_rules('cpassword', 'Potvrzení hesla', 'trim|required|matches[password]');
+        $this->form_validation->set_rules('confPassword', 'Potvrzení hesla', 'trim|required|matches[password]');
 
         if ($this->form_validation->run() == TRUE) {
-            $password = $this->password_hash($this->input->post('password'));
             $data = array(
                 'username' => $this->input->post('name'),
-                'password' => $password,
+                'password' => $this->password_hash($this->input->post('password')),
                 'email' => $this->input->post('email'),
             );
 
-            $create = $this->model_users->create($data, $this->input->post('groups'));
+            $create = $this->model_users->create($data, $this->input->post('group'));
             if ($create == true) {
                 $this->session->set_flashdata('success', 'Uživatel byl úspěšně vytvořen');
                 redirect('users/', 'refresh');
@@ -87,30 +94,23 @@ class Users extends Admin_Controller
         }
     }
 
-    public function password_hash($pass = '')
-    {
-        if ($pass) {
-            $password = password_hash($pass, PASSWORD_DEFAULT);
-            return $password;
-        }
-    }
-
-    public function edit($id = null)
+    public function update($id = null)
     {
         if (!in_array('updateUser', $this->permission)) {
             redirect('dashboard', 'refresh');
         }
 
-        if ($id) {
+        if (!$id) {
+            redirect('users', 'refresh');
+        }
+
+        if ($this->model_users->existInUsers($id) == FALSE) {
+            $this->session->set_flashdata('error', 'Hráč neexistuje!');
+            redirect('users', 'refresh');
+        } else {
             $this->form_validation->set_rules('groups', 'Group', 'required');
 
-            $link = $_SERVER['PHP_SELF'];
-            $link_array = explode('/', $link);
-            $user_id = end($link_array);
-            $user_data = '';
-            if ($user_id) {
-                $user_data = $this->model_users->getUserData($user_id);
-            }
+            $user_data = $this->model_users->getUserData($id);
 
             if ($user_data['username'] !== $this->input->post('name')) {
                 $this->form_validation->set_rules('name', 'Jméno', 'trim|required|min_length[3]|max_length[12]|is_unique[z_users.username]');
@@ -120,27 +120,29 @@ class Users extends Admin_Controller
                 $this->form_validation->set_rules('email', 'Email', 'trim|required|is_unique[z_users.email]');
             }
 
+            $password = array_key_exists('password', $_POST) ? trim($_POST['password']) : null;
+            $confPassword = array_key_exists('confPassword', $_POST) ? trim($_POST['confPassword']) : null;
+
             if ($this->form_validation->run() == TRUE) {
-                if (empty($this->input->post('password')) && empty($this->input->post('cpassword'))) {
+                if (empty($password) && empty($confPassword)) {
                     $data = array(
                         'username' => $this->input->post('name'),
                         'email' => $this->input->post('email'),
                     );
 
-                    $update = $this->model_users->edit($data, $id, $this->input->post('groups'));
+                    $update = $this->model_users->update($data, $id, $this->input->post('groups'));
                     if ($update == true) {
                         $this->session->set_flashdata('success', 'Hráč byl úspěšně upraven');
                         redirect('users/', 'refresh');
                     } else {
                         $this->session->set_flashdata('errors', 'Nastala chyba!');
-                        redirect('users/edit/' . $id, 'refresh');
+                        redirect('users/update/' . $id, 'refresh');
                     }
                 } else {
                     $this->form_validation->set_rules('password', 'Heslo', 'trim|required|min_length[3]|max_length[20]');
-                    $this->form_validation->set_rules('cpassword', 'Potvrzení hesla', 'trim|required|matches[password]');
+                    $this->form_validation->set_rules('confPassword', 'Potvrzení hesla', 'trim|required|matches[password]');
 
                     if ($this->form_validation->run() == TRUE) {
-
                         $password = $this->password_hash($this->input->post('password'));
 
                         $data = array(
@@ -149,13 +151,13 @@ class Users extends Admin_Controller
                             'email' => $this->input->post('email'),
                         );
 
-                        $update = $this->model_users->edit($data, $id, $this->input->post('groups'));
+                        $update = $this->model_users->update($data, $id, $this->input->post('groups'));
                         if ($update == true) {
                             $this->session->set_flashdata('success', 'Hráč byl úspěšně upraven');
                             redirect('users/', 'refresh');
                         } else {
                             $this->session->set_flashdata('errors', 'Nastala chyba!');
-                            redirect('users/edit/' . $id, 'refresh');
+                            redirect('users/update/' . $id, 'refresh');
                         }
                     } else {
                         $user_data = $this->model_users->getUserData($id);
@@ -167,7 +169,7 @@ class Users extends Admin_Controller
                         $group_data = $this->model_groups->getGroupData();
                         $this->data['group_data'] = $group_data;
 
-                        $this->render_template('users/edit', $this->data);
+                        $this->render_template('users/update', $this->data);
                     }
 
                 }
@@ -181,7 +183,7 @@ class Users extends Admin_Controller
                 $group_data = $this->model_groups->getGroupData();
                 $this->data['group_data'] = $group_data;
 
-                $this->render_template('users/edit', $this->data);
+                $this->render_template('users/update', $this->data);
             }
         }
     }
@@ -193,102 +195,114 @@ class Users extends Admin_Controller
         }
 
         if ($id) {
-            if ($this->input->post('confirm')) {
-                $delete = $this->model_users->delete($id);
-                if ($delete == true) {
-                    $this->session->set_flashdata('success', 'Hráč byl úspěšně odstraněn');
-                    redirect('users/', 'refresh');
-                } else {
-                    $this->session->set_flashdata('error', 'Nastala chyba!');
-                    redirect('users/delete/' . $id, 'refresh');
-                }
-
+            if ($this->model_users->existInUsers($id) == FALSE) {
+                $response['success'] = false;
+                $response['messages'] = 'Hráč neexistuje!';
             } else {
-                $this->data['id'] = $id;
-                $this->render_template('users/delete', $this->data);
+                if ($this->input->post('confirm')) {
+                    $delete = $this->model_users->delete($id);
+                    if ($delete == true) {
+                        $this->session->set_flashdata('success', 'Hráč byl úspěšně odstraněn');
+                        redirect('users/', 'refresh');
+                    } else {
+                        $this->session->set_flashdata('error', 'Nastala chyba!');
+                        redirect('users/delete/' . $id, 'refresh');
+                    }
+                }
             }
+        } else {
+            $this->data['id'] = $id;
+            $this->render_template('users/delete', $this->data);
         }
     }
 
-    public function setting()
+    public function settings()
     {
-        if (!in_array('updateSetting', $this->permission)) {
+        if (!in_array('updateSettings', $this->permission)) {
             redirect('dashboard', 'refresh');
         }
 
         $id = $this->session->userdata('id');
 
         if ($id) {
-            $this->form_validation->set_rules('username', 'Jméno', 'trim|required|min_length[3]|max_length[12]');
+            if ($this->model_users->existInUsers($id) == FALSE) {
+                $this->session->set_flashdata('error', 'Hráč neexistuje!');
+                redirect('dashboard', 'refresh');
+            } else {
+                $this->form_validation->set_rules('username', 'Jméno', 'trim|required|min_length[3]|max_length[12]');
 
-            $user_data = $this->model_users->getUserData($id);
+                $user_data = $this->model_users->getUserData($id);
 
-            if ($user_data['email'] !== $this->input->post('email')) {
-                $this->form_validation->set_rules('email', 'Email', 'trim|required|is_unique[z_users.email]');
-            }
+                if ($user_data['email'] !== $this->input->post('email')) {
+                    $this->form_validation->set_rules('email', 'Email', 'trim|required|is_unique[z_users.email]');
+                }
 
-            if ($this->form_validation->run() == TRUE) {
-                if (empty($this->input->post('password')) && empty($this->input->post('cpassword'))) {
-                    $data = array(
-                        'username' => $this->input->post('username'),
-                        'email' => $this->input->post('email'),
-                    );
+                $password = array_key_exists('password', $_POST) ? trim($_POST['password']) : null;
+                $confPassword = array_key_exists('confPassword', $_POST) ? trim($_POST['confPassword']) : null;
 
-                    $update = $this->model_users->edit($data, $id);
-                    if ($update == true) {
-                        $this->session->set_flashdata('success', 'Informace byly úspěšně změněny');
-                        redirect('users/setting/', 'refresh');
-                    } else {
-                        $this->session->set_flashdata('errors', 'Nastala chyba!');
-                        redirect('users/setting/', 'refresh');
-                    }
-                } else {
-                    $this->form_validation->set_rules('password', 'Heslo', 'trim|required|min_length[3]|max_length[20]');
-                    $this->form_validation->set_rules('cpassword', 'Potvrzení hesla', 'trim|required|matches[password]');
-
-                    if ($this->form_validation->run() == TRUE) {
-
-                        $password = $this->password_hash($this->input->post('password'));
-
+                if ($this->form_validation->run() == TRUE) {
+                    if (empty($password) && empty($confPassword)) {
                         $data = array(
                             'username' => $this->input->post('username'),
-                            'password' => $password,
                             'email' => $this->input->post('email'),
                         );
 
-                        $update = $this->model_users->edit($data, $id, $this->input->post('groups'));
+                        $update = $this->model_users->update($data, $id);
                         if ($update == true) {
                             $this->session->set_flashdata('success', 'Informace byly úspěšně změněny');
-                            redirect('users/setting/', 'refresh');
+                            redirect('users/settings/', 'refresh');
                         } else {
                             $this->session->set_flashdata('errors', 'Nastala chyba!');
-                            redirect('users/setting/', 'refresh');
+                            redirect('users/settings/', 'refresh');
                         }
                     } else {
-                        $user_data = $this->model_users->getUserData($id);
-                        $groups = $this->model_users->getUserGroup($id);
+                        $this->form_validation->set_rules('password', 'Heslo', 'trim|required|min_length[3]|max_length[20]');
+                        $this->form_validation->set_rules('confPassword', 'Potvrzení hesla', 'trim|required|matches[password]');
 
-                        $this->data['user_data'] = $user_data;
-                        $this->data['user_group'] = $groups;
+                        if ($this->form_validation->run() == TRUE) {
 
-                        $group_data = $this->model_groups->getGroupData();
-                        $this->data['group_data'] = $group_data;
+                            $password = $this->password_hash($this->input->post('password'));
 
-                        $this->render_template('users/setting', $this->data);
+                            $data = array(
+                                'username' => $this->input->post('username'),
+                                'password' => $password,
+                                'email' => $this->input->post('email'),
+                            );
+
+                            $update = $this->model_users->update($data, $id, $this->input->post('groups'));
+                            if ($update == true) {
+                                $this->session->set_flashdata('success', 'Informace byly úspěšně změněny');
+                                redirect('users/settings/', 'refresh');
+                            } else {
+                                $this->session->set_flashdata('errors', 'Nastala chyba!');
+                                redirect('users/settings/', 'refresh');
+                            }
+                        } else {
+                            $user_data = $this->model_users->getUserData($id);
+                            $groups = $this->model_users->getUserGroup($id);
+
+                            $this->data['user_data'] = $user_data;
+                            $this->data['user_group'] = $groups;
+
+                            $group_data = $this->model_groups->getGroupData();
+                            $this->data['group_data'] = $group_data;
+
+                            $this->render_template('users/settings', $this->data);
+                        }
+
                     }
+                } else {
+                    $user_data = $this->model_users->getUserData($id);
+                    $groups = $this->model_users->getUserGroup($id);
 
+                    $this->data['user_data'] = $user_data;
+                    $this->data['user_group'] = $groups;
+
+                    $group_data = $this->model_groups->getGroupData();
+                    $this->data['group_data'] = $group_data;
+
+                    $this->render_template('users/settings', $this->data);
                 }
-            } else {
-                $user_data = $this->model_users->getUserData($id);
-                $groups = $this->model_users->getUserGroup($id);
-
-                $this->data['user_data'] = $user_data;
-                $this->data['user_group'] = $groups;
-
-                $group_data = $this->model_groups->getGroupData();
-                $this->data['group_data'] = $group_data;
-
-                $this->render_template('users/setting', $this->data);
             }
         }
     }

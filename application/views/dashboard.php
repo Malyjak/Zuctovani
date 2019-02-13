@@ -71,7 +71,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                 <div class="col-lg-3 col-xs-6">
                     <div class="small-box bg-yellow">
                         <div class="inner">
-                            <h3><?php echo $total_players ?></h3>
+                            <h3><?php echo $total_users ?></h3>
                             <p>Celkově hráčů</p>
                         </div>
                         <div class="icon">

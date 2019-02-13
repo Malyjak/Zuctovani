@@ -53,13 +53,71 @@ class Model_skills extends CI_Model
         }
     }
 
-    public function remove($id)
+    public function delete($id)
     {
         if ($id) {
             $this->db->where('id', $id);
             $delete = $this->db->delete('Z_skills');
             return ($delete == true) ? true : false;
         }
+    }
+
+    public function existInSkills($id)
+    {
+        $sql = "SELECT * FROM z_skills WHERE id = ?";
+        $query = $this->db->query($sql, array($id));
+        return ($query->num_rows() == 1) ? true : false;
+    }
+
+    public function existInNpcs($id)
+    {
+        $sql = "SELECT skills FROM z_npcs";
+        $query = $this->db->query($sql)->result_array();
+        $contains = false;
+        foreach ($query as &$value) {
+            $value = unserialize(reset($value));
+            if ($value != null) {
+                if (in_array($id, $value)) {
+                    $contains = true;
+                    break;
+                }
+            }
+        }
+        return $contains;
+    }
+
+    public function existInCharacters($id)
+    {
+        $sql = "SELECT skills FROM z_characters";
+        $query = $this->db->query($sql)->result_array();
+        $contains = false;
+        foreach ($query as &$value) {
+            $value = unserialize(reset($value));
+            if ($value != null) {
+                if (in_array($id, $value)) {
+                    $contains = true;
+                    break;
+                }
+            }
+        }
+        return $contains;
+    }
+
+    public function existInCompanions($id)
+    {
+        $sql = "SELECT skills FROM z_companions";
+        $query = $this->db->query($sql)->result_array();
+        $contains = false;
+        foreach ($query as &$value) {
+            $value = unserialize(reset($value));
+            if ($value != null) {
+                if (in_array($id, $value)) {
+                    $contains = true;
+                    break;
+                }
+            }
+        }
+        return $contains;
     }
 
     public function countTotalSkills()

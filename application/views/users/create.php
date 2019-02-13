@@ -53,8 +53,8 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                                 <?php echo validation_errors(); ?>
                             </div>
                             <div class="form-group">
-                                <label for="groups">Oprávnění</label>
-                                <select class="form-control" id="groups" name="groups" required>
+                                <label for="group">Oprávnění</label>
+                                <select class="form-control" id="group" name="group" required>
                                     <?php foreach ($group_data as $k => $v): ?>
                                         <option value="<?php echo $v['id'] ?>" <?php if ($v['id'] == 3) {
                                             echo "selected='selected'";
@@ -78,8 +78,8 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                                        placeholder="Heslo" autocomplete="off" required>
                             </div>
                             <div class="form-group">
-                                <label for="cpassword">Potvrzení hesla</label>
-                                <input type="password" class="form-control" id="cpassword" name="cpassword"
+                                <label for="confPassword">Potvrzení hesla</label>
+                                <input type="password" class="form-control" id="confPassword" name="confPassword"
                                        placeholder="Potvrzení hesla" autocomplete="off" required>
                             </div>
                         </div>

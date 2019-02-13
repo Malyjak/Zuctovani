@@ -38,7 +38,7 @@ class Dashboard extends Admin_Controller
     {
         $this->data['total_items'] = $this->model_items->countTotalItems();
         $this->data['total_npcs'] = $this->model_npcs->countTotalNpcs();
-        $this->data['total_players'] = $this->model_users->countTotalPlayers();
+        $this->data['total_users'] = $this->model_users->countTotalUsers();
         $this->data['total_locations'] = $this->model_locations->countTotalLocations();
         $this->data['total_skills'] = $this->model_skills->countTotalSkills();
         $this->data['total_races'] = $this->model_races->countTotalRaces();

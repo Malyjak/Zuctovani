@@ -61,7 +61,7 @@ class Groups extends Admin_Controller
             $create = $this->model_groups->create($data);
             if ($create == true) {
                 $this->session->set_flashdata('success', 'Skupina byla úspěšně vytvořena');
-                redirect('groups/', 'refresh');
+                redirect('groups', 'refresh');
             } else {
                 $this->session->set_flashdata('errors', 'Nastala chyba!');
                 redirect('groups/create', 'refresh');
@@ -77,33 +77,35 @@ class Groups extends Admin_Controller
             redirect('dashboard', 'refresh');
         }
 
-        if ($id) {
+        if (!$id) {
+            redirect('groups', 'refresh');
+        }
+
+        if ($this->model_groups->existInGroups($id) == FALSE) {
+            $this->session->set_flashdata('error', 'Skupina neexistuje!');
+            redirect('groups', 'refresh');
+        } else {
             $this->form_validation->set_rules('group_name', 'Group name', 'required');
-            if ($this->model_groups->existInGroups($id) == FALSE) {
-                $this->session->set_flashdata('error', 'Skupina neexistuje!');
-                redirect('groups/', 'refresh');
-            } else {
-                if ($this->form_validation->run() == TRUE) {
-                    $permission = serialize($this->input->post('permission'));
+            if ($this->form_validation->run() == TRUE) {
+                $permission = serialize($this->input->post('permission'));
 
-                    $data = array(
-                        'group_name' => $this->input->post('group_name'),
-                        'permission' => $permission
-                    );
+                $data = array(
+                    'group_name' => $this->input->post('group_name'),
+                    'permission' => $permission
+                );
 
-                    $update = $this->model_groups->update($data, $id);
-                    if ($update == true) {
-                        $this->session->set_flashdata('success', 'Skupina byla úspěšně upravena');
-                        redirect('groups/', 'refresh');
-                    } else {
-                        $this->session->set_flashdata('errors', 'Nastala chyba!');
-                        redirect('groups/update/' . $id, 'refresh');
-                    }
+                $update = $this->model_groups->update($data, $id);
+                if ($update == true) {
+                    $this->session->set_flashdata('success', 'Skupina byla úspěšně upravena');
+                    redirect('groups', 'refresh');
                 } else {
-                    $group_data = $this->model_groups->getGroupData($id);
-                    $this->data['group_data'] = $group_data;
-                    $this->render_template('groups/update', $this->data);
+                    $this->session->set_flashdata('errors', 'Nastala chyba!');
+                    redirect('groups/update/' . $id, 'refresh');
                 }
+            } else {
+                $group_data = $this->model_groups->getGroupData($id);
+                $this->data['group_data'] = $group_data;
+                $this->render_template('groups/update', $this->data);
             }
         }
     }
@@ -118,12 +120,12 @@ class Groups extends Admin_Controller
             if ($this->input->post('confirm')) {
                 if ($this->model_groups->existInUserGroup($id)) {
                     $this->session->set_flashdata('error', 'Skupina je používaná!');
-                    redirect('groups/', 'refresh');
+                    redirect('groups', 'refresh');
                 } else if ($this->model_groups->existInGroups($id)) {
                     $delete = $this->model_groups->delete($id);
                     if ($delete == true) {
                         $this->session->set_flashdata('success', 'Skupina byla úspěšně odstraněna');
-                        redirect('groups/', 'refresh');
+                        redirect('groups', 'refresh');
                     } else {
                         $this->session->set_flashdata('error', 'Nastala chyba!');
                         redirect('groups/delete/' . $id, 'refresh');

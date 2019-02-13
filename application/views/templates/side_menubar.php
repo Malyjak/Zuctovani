@@ -210,8 +210,8 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                         </a>
                     </li>
                 <?php endif; ?>
-                <?php if (in_array('updateSetting', $user_permission)): ?>
-                    <li id="settingsNav"><a href="<?php echo base_url('users/setting/') ?>"><i class="fa fa-wrench"></i>
+                <?php if (in_array('updateSettings', $user_permission)): ?>
+                    <li id="settingsNav"><a href="<?php echo base_url('users/settings/') ?>"><i class="fa fa-wrench"></i>
                             <span>Změna údajů</span></a>
                     </li>
                 <?php endif; ?>

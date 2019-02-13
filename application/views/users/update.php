@@ -18,12 +18,13 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-            Změnit
-            <small>Údaje</small>
+            Upravit
+            <small>Hráči</small>
         </h1>
         <ol class="breadcrumb">
             <li><a href="<?php echo base_url('dashboard/') ?>"><i class="fa fa-line-chart"></i> Domů</a></li>
-            <li class="active">Změna údajů</li>
+            <li><a href="<?php echo base_url('users/') ?>">Hráči</a></li>
+            <li class="active">Upravit</li>
         </ol>
     </section>
     <section class="content">
@@ -44,18 +45,27 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                 <?php endif; ?>
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title">Změna údajů</h3>
+                        <h3 class="box-title">Upravit hráče</h3>
                     </div>
-                    <form role="form" action="<?php base_url('users/setting') ?>" method="post">
+                    <form role="form" action="<?php base_url('users/create') ?>" method="post">
                         <div class="box-body">
                             <div class="text-red">
                                 <?php echo validation_errors(); ?>
                             </div>
                             <div class="form-group">
+                                <label for="groups">Oprávnění</label>
+                                <select class="form-control" id="groups" name="groups" required>
+                                    <?php foreach ($group_data as $k => $v): ?>
+                                        <option value="<?php echo $v['id'] ?>" <?php if ($user_group['id'] == $v['id']) {
+                                            echo 'selected';
+                                        } ?> ><?php echo $v['group_name'] ?></option>
+                                    <?php endforeach ?>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label for="username">Jméno</label>
-                                <input type="text" class="form-control" id="username" name="username"
-                                       placeholder="Jméno" value="<?php echo $user_data['username'] ?>"
-                                       autocomplete="off" required>
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Jméno"
+                                       value="<?php echo $user_data['username'] ?>" autocomplete="off" required>
                             </div>
                             <div class="form-group">
                                 <label for="email">Email</label>
@@ -75,14 +85,14 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                                        placeholder="Heslo" autocomplete="off">
                             </div>
                             <div class="form-group">
-                                <label for="cpassword">Potvrzení hesla</label>
-                                <input type="password" class="form-control" id="cpassword" name="cpassword"
+                                <label for="confPassword">Potvrzení hesla</label>
+                                <input type="password" class="form-control" id="confPassword" name="confPassword"
                                        placeholder="Potvrzení hesla" autocomplete="off">
                             </div>
                         </div>
                         <div class="box-footer">
                             <button type="submit" class="btn btn-primary">Uložit změny</button>
-                            <a href="<?php echo base_url('dashboard/') ?>" class="btn btn-warning">Zpět</a>
+                            <a href="<?php echo base_url('users/') ?>" class="btn btn-warning">Zpět</a>
                         </div>
                     </form>
                 </div>
@@ -93,7 +103,9 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $("#settingsNav").addClass('active');
+        $("#mainUserNav").addClass('active');
+        $("#manageUserNav").addClass('active');
+
     });
 
 </script>

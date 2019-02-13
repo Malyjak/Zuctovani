@@ -315,8 +315,8 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                                         <td>Změna údajů</td>
                                         <td>-</td>
                                         <td><input type="checkbox" name="permission[]" id="permission" class="minimal"
-                                                   value="updateSetting" <?php if ($serialize_permission) {
-                                                if (in_array('updateSetting', $serialize_permission)) {
+                                                   value="updateSettings" <?php if ($serialize_permission) {
+                                                if (in_array('updateSettings', $serialize_permission)) {
                                                     echo "checked";
                                                 }
                                             } ?>></td>
