@@ -22,8 +22,8 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
             <small>NPC</small>
         </h1>
         <ol class="breadcrumb">
-            <li><a href="<?php echo base_url('dashboard/') ?>"><i class="fa fa-line-chart"></i> Domů</a></li>
-            <li><a href="<?php echo base_url('npcs/') ?>">NPC</a></li>
+            <li><a href="<?php echo base_url('dashboard') ?>"><i class="fa fa-line-chart"></i> Domů</a></li>
+            <li><a href="<?php echo base_url('npcs') ?>">NPC</a></li>
             <li class="active">Zobrazit</li>
         </ol>
     </section>
@@ -157,7 +157,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                             </div>
                         </div>
                         <div class="box-footer">
-                            <a href="<?php echo base_url('npcs/') ?>" class="btn btn-success">Zpět na přehled
+                            <a href="<?php echo base_url('npcs') ?>" class="btn btn-success">Zpět na přehled
                                 NPC</a>
                         </div>
                     </div>

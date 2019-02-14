@@ -22,8 +22,8 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
             <small>Hráči</small>
         </h1>
         <ol class="breadcrumb">
-            <li><a href="<?php echo base_url('dashboard/') ?>"><i class="fa fa-line-chart"></i> Domů</a></li>
-            <li><a href="<?php echo base_url('users/') ?>">Hráči</a></li>
+            <li><a href="<?php echo base_url('dashboard') ?>"><i class="fa fa-line-chart"></i> Domů</a></li>
+            <li><a href="<?php echo base_url('users') ?>">Hráči</a></li>
             <li class="active">Odstranit</li>
         </ol>
     </section>

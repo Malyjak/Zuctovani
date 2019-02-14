@@ -42,6 +42,10 @@ class Races extends Admin_Controller
 
     public function fetchRaceData()
     {
+        if (!in_array('viewRace', $this->permission)) {
+            redirect('dashboard', 'refresh');
+        }
+
         $result = array('data' => array());
 
         $data = $this->model_races->getRaceData();
@@ -53,7 +57,7 @@ class Races extends Admin_Controller
             }
 
             if (in_array('deleteRace', $this->permission)) {
-                $buttons .= ' <button type="button" class="btn btn-default" onclick="removeFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button>';
+                $buttons .= ' <button type="button" class="btn btn-default" onclick="deleteFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#deleteModal"><i class="fa fa-trash"></i></button>';
             }
 
             $result['data'][$key] = array(
@@ -103,28 +107,33 @@ class Races extends Admin_Controller
             redirect('dashboard', 'refresh');
         }
 
-        $this->form_validation->set_rules('name', 'name', 'trim|required');
-
-        if ($this->form_validation->run() == TRUE) {
-            $data = array(
-                'name' => $this->input->post('name'),
-                'description' => $this->input->post('description'),
-            );
-
-            $update = $this->model_races->update($data, $race_id);
-            if ($update == true) {
-                $this->session->set_flashdata('success', 'Rasa byla úspěšně upravena');
-                redirect('races/', 'refresh');
-            } else {
-                $this->session->set_flashdata('errors', 'Nastala chyba!');
-                redirect('races/update/' . $race_id, 'refresh');
-            }
+        if ($this->model_races->existInRaces($race_id) == FALSE) {
+            $this->session->set_flashdata('error', 'Rasa neexistuje!');
+            redirect('races', 'refresh');
         } else {
-            $this->render_template('races/edit', $this->data);
+            $this->form_validation->set_rules('name', 'name', 'trim|required');
+
+            if ($this->form_validation->run() == TRUE) {
+                $data = array(
+                    'name' => $this->input->post('name'),
+                    'description' => $this->input->post('description'),
+                );
+
+                $update = $this->model_races->update($data, $race_id);
+                if ($update == true) {
+                    $this->session->set_flashdata('success', 'Rasa byla úspěšně upravena');
+                    redirect('races/', 'refresh');
+                } else {
+                    $this->session->set_flashdata('errors', 'Nastala chyba!');
+                    redirect('races/update/' . $race_id, 'refresh');
+                }
+            } else {
+                $this->render_template('races/update', $this->data);
+            }
         }
     }
 
-    public function remove()
+    public function delete()
     {
         if (!in_array('deleteRace', $this->permission)) {
             redirect('dashboard', 'refresh');
@@ -134,13 +143,24 @@ class Races extends Admin_Controller
 
         $response = array();
         if ($race_id) {
-            $delete = $this->model_races->remove($race_id);
-            if ($delete == true) {
-                $response['success'] = true;
-                $response['messages'] = "Rasa byla úspěšně odstraněna";
+            if ($this->model_races->existInNpcs($race_id)) {
+                $response['success'] = false;
+                $response['messages'] = "Nelze odstranit! Rasa je používána NPC!";
+            } else if ($this->model_races->existInCharacters($race_id)) {
+                $response['success'] = false;
+                $response['messages'] = "Nelze odstranit! Rasa je používána postavou!";
+            } else if ($this->model_races->existInRaces($race_id)) {
+                $delete = $this->model_races->delete($race_id);
+                if ($delete == true) {
+                    $response['success'] = true;
+                    $response['messages'] = "Rasa byla úspěšně odstraněna";
+                } else {
+                    $response['success'] = false;
+                    $response['messages'] = "Nastala chyba!";
+                }
             } else {
                 $response['success'] = false;
-                $response['messages'] = "Nastala chyba!";
+                $response['messages'] = "Id nenalezeno!";
             }
         } else {
             $response['success'] = false;

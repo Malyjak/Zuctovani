@@ -38,7 +38,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                         <div class="icon">
                             <i class="ion ion-ios-nutrition"></i>
                         </div>
-                        <a href="<?php echo base_url('items/') ?>" class="small-box-footer">Více informací <i
+                        <a href="<?php echo base_url('items') ?>" class="small-box-footer">Více informací <i
                                     class="fa fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
@@ -51,7 +51,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                         <div class="icon">
                             <i class="ion ion-social-freebsd-devil"></i>
                         </div>
-                        <a href="<?php echo base_url('npcs/') ?>" class="small-box-footer">Více informací <i
+                        <a href="<?php echo base_url('npcs') ?>" class="small-box-footer">Více informací <i
                                     class="fa fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
@@ -64,7 +64,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                         <div class="icon">
                             <i class="ion ion-android-home"></i>
                         </div>
-                        <a href="<?php echo base_url('locations/') ?>" class="small-box-footer">Více informací <i
+                        <a href="<?php echo base_url('locations') ?>" class="small-box-footer">Více informací <i
                                     class="fa fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
@@ -77,7 +77,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                         <div class="icon">
                             <i class="ion ion-android-people"></i>
                         </div>
-                        <a href="<?php echo base_url('users/') ?>" class="small-box-footer">Více informací <i
+                        <a href="<?php echo base_url('users') ?>" class="small-box-footer">Více informací <i
                                     class="fa fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
@@ -92,7 +92,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                         <div class="icon">
                             <i class="ion ion-bonfire"></i>
                         </div>
-                        <a href="<?php echo base_url('skills/') ?>" class="small-box-footer">Více informací <i
+                        <a href="<?php echo base_url('skills') ?>" class="small-box-footer">Více informací <i
                                     class="fa fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
@@ -105,7 +105,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                         <div class="icon">
                             <i class="ion ion-earth"></i>
                         </div>
-                        <a href="<?php echo base_url('races/') ?>" class="small-box-footer">Více informací <i
+                        <a href="<?php echo base_url('races') ?>" class="small-box-footer">Více informací <i
                                     class="fa fa-arrow-circle-right"></i></a>
                     </div>
                 </div>

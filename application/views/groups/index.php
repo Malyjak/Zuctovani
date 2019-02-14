@@ -22,7 +22,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
             <small>Skupiny</small>
         </h1>
         <ol class="breadcrumb">
-            <li><a href="<?php echo base_url('dashboard/') ?>"><i class="fa fa-line-chart"></i> Domů</a></li>
+            <li><a href="<?php echo base_url('dashboard') ?>"><i class="fa fa-line-chart"></i> Domů</a></li>
             <li class="active">Skupiny</li>
         </ol>
     </section>

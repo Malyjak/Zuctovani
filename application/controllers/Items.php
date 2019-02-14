@@ -190,7 +190,7 @@ class Items extends Admin_Controller
                     redirect('items/update/' . $item_id, 'refresh');
                 }
             } else {
-                $this->render_template('items/edit', $this->data);
+                $this->render_template('items/update', $this->data);
             }
         }
     }

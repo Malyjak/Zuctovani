@@ -176,7 +176,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                 <?php endif; ?>
                 <?php if (in_array('createCharacter', $user_permission) || in_array('updateCharacter', $user_permission) || in_array('viewCharacter', $user_permission) || in_array('deleteCharacter', $user_permission)): ?>
                     <li id="charNav">
-                        <a href="<?php echo base_url('character/') ?>">
+                        <a href="<?php echo base_url('character') ?>">
                             <i class="fa fa-user"></i> <span>Postava</span>
                         </a>
                     </li>
@@ -205,13 +205,13 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                 <?php endif; ?>
                 <?php if (in_array('viewReports', $user_permission)): ?>
                     <li id="reportNav">
-                        <a href="<?php echo base_url('reports/') ?>">
+                        <a href="<?php echo base_url('reports') ?>">
                             <i class="glyphicon glyphicon-stats"></i> <span>Reporty - 0.5.0</span>
                         </a>
                     </li>
                 <?php endif; ?>
                 <?php if (in_array('updateSettings', $user_permission)): ?>
-                    <li id="settingsNav"><a href="<?php echo base_url('users/settings/') ?>"><i class="fa fa-wrench"></i>
+                    <li id="settingsNav"><a href="<?php echo base_url('users/settings') ?>"><i class="fa fa-wrench"></i>
                             <span>Změna údajů</span></a>
                     </li>
                 <?php endif; ?>

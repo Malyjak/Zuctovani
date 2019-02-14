@@ -81,7 +81,7 @@ class Users extends Admin_Controller
             $create = $this->model_users->create($data, $this->input->post('group'));
             if ($create == true) {
                 $this->session->set_flashdata('success', 'Uživatel byl úspěšně vytvořen');
-                redirect('users/', 'refresh');
+                redirect('users', 'refresh');
             } else {
                 $this->session->set_flashdata('errors', 'Nastala chyba!');
                 redirect('users/create', 'refresh');
@@ -133,7 +133,7 @@ class Users extends Admin_Controller
                     $update = $this->model_users->update($data, $id, $this->input->post('groups'));
                     if ($update == true) {
                         $this->session->set_flashdata('success', 'Hráč byl úspěšně upraven');
-                        redirect('users/', 'refresh');
+                        redirect('users', 'refresh');
                     } else {
                         $this->session->set_flashdata('errors', 'Nastala chyba!');
                         redirect('users/update/' . $id, 'refresh');
@@ -203,16 +203,16 @@ class Users extends Admin_Controller
                     $delete = $this->model_users->delete($id);
                     if ($delete == true) {
                         $this->session->set_flashdata('success', 'Hráč byl úspěšně odstraněn');
-                        redirect('users/', 'refresh');
+                        redirect('users', 'refresh');
                     } else {
                         $this->session->set_flashdata('error', 'Nastala chyba!');
                         redirect('users/delete/' . $id, 'refresh');
                     }
+                } else {
+                    $this->data['id'] = $id;
+                    $this->render_template('users/delete', $this->data);
                 }
             }
-        } else {
-            $this->data['id'] = $id;
-            $this->render_template('users/delete', $this->data);
         }
     }
 
@@ -250,10 +250,10 @@ class Users extends Admin_Controller
                         $update = $this->model_users->update($data, $id);
                         if ($update == true) {
                             $this->session->set_flashdata('success', 'Informace byly úspěšně změněny');
-                            redirect('users/settings/', 'refresh');
+                            redirect('users/settings', 'refresh');
                         } else {
                             $this->session->set_flashdata('errors', 'Nastala chyba!');
-                            redirect('users/settings/', 'refresh');
+                            redirect('users/settings', 'refresh');
                         }
                     } else {
                         $this->form_validation->set_rules('password', 'Heslo', 'trim|required|min_length[3]|max_length[20]');
@@ -272,10 +272,10 @@ class Users extends Admin_Controller
                             $update = $this->model_users->update($data, $id, $this->input->post('groups'));
                             if ($update == true) {
                                 $this->session->set_flashdata('success', 'Informace byly úspěšně změněny');
-                                redirect('users/settings/', 'refresh');
+                                redirect('users/settings', 'refresh');
                             } else {
                                 $this->session->set_flashdata('errors', 'Nastala chyba!');
-                                redirect('users/settings/', 'refresh');
+                                redirect('users/settings', 'refresh');
                             }
                         } else {
                             $user_data = $this->model_users->getUserData($id);

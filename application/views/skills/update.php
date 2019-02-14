@@ -22,8 +22,8 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
             <small>Dovednosti</small>
         </h1>
         <ol class="breadcrumb">
-            <li><a href="<?php echo base_url('dashboard/') ?>"><i class="fa fa-line-chart"></i> Domů</a></li>
-            <li><a href="<?php echo base_url('skills/') ?>">Dovednosti</a></li>
+            <li><a href="<?php echo base_url('dashboard') ?>"><i class="fa fa-line-chart"></i> Domů</a></li>
+            <li><a href="<?php echo base_url('skills') ?>">Dovednosti</a></li>
             <li class="active">Upravit</li>
         </ol>
     </section>
@@ -93,7 +93,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                         </div>
                         <div class="box-footer">
                             <button type="submit" class="btn btn-primary">Uložit změny</button>
-                            <a href="<?php echo base_url('skills/') ?>" class="btn btn-warning">Zpět</a>
+                            <a href="<?php echo base_url('skills') ?>" class="btn btn-warning">Zpět</a>
                         </div>
                     </form>
                 </div>
