@@ -22,8 +22,8 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
             <small>Společníci</small>
         </h1>
         <ol class="breadcrumb">
-            <li><a href="<?php echo base_url('dashboard/') ?>"><i class="fa fa-line-chart"></i> Domů</a></li>
-            <li><a href="<?php echo base_url('companions/') ?>">Společníci</a></li>
+            <li><a href="<?php echo base_url('dashboard') ?>"><i class="fa fa-line-chart"></i> Domů</a></li>
+            <li><a href="<?php echo base_url('companions') ?>">Společníci</a></li>
             <li class="active">Zobrazit</li>
         </ol>
     </section>
@@ -124,7 +124,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                                 </div>
                             </div>
                             <div class="box-footer">
-                                <a href="<?php echo base_url('companions/') ?>" class="btn btn-success">Zpět na přehled
+                                <a href="<?php echo base_url('companions') ?>" class="btn btn-success">Zpět na přehled
                                     NPC</a>
                             </div>
                     </form>
@@ -596,12 +596,12 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                             $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">' +
                                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + response.messages +
                                 '</div>');
-                            $("#removeSkillModal").modal('hide');
                         } else {
                             $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">' +
                                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + response.messages +
                                 '</div>');
                         }
+                        $("#removeSkillModal").modal('hide');
                     }
                 });
 
@@ -668,12 +668,12 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                             $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">' +
                                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + response.messages +
                                 '</div>');
-                            $("#removeItemModal").modal('hide');
                         } else {
                             $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">' +
                                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + response.messages +
                                 '</div>');
                         }
+                        $("#removeItemModal").modal('hide');
                     }
                 });
 

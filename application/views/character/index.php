@@ -22,7 +22,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
             <small>Postava</small>
         </h1>
         <ol class="breadcrumb">
-            <li><a href="<?php echo base_url('dashboard/') ?>"><i class="fa fa-line-chart"></i> Domů</a></li>
+            <li><a href="<?php echo base_url('dashboard') ?>"><i class="fa fa-line-chart"></i> Domů</a></li>
             <li class="active">Postava</li>
         </ol>
     </section>
@@ -192,7 +192,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                 </button>
                 <h4 class="modal-title">Upravit</h4>
             </div>
-            <form role="form" action="<?php echo base_url('character/updateName/') ?>" method="post"
+            <form role="form" action="<?php echo base_url('character/updateName') ?>" method="post"
                   id="editNameForm">
                 <div class="modal-body" id="nameListEdit">
                     <div class="form-group">
@@ -255,7 +255,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                 </button>
                 <h4 class="modal-title">Upravit</h4>
             </div>
-            <form role="form" action="<?php echo base_url('character/updateHp/') ?>" method="post"
+            <form role="form" action="<?php echo base_url('character/updateHp') ?>" method="post"
                   id="editHpForm">
                 <div class="modal-body" id="hpListEdit">
                     <div class="row">
@@ -312,7 +312,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                 </button>
                 <h4 class="modal-title">Upravit</h4>
             </div>
-            <form role="form" action="<?php echo base_url('character/updateReflexes/') ?>" method="post"
+            <form role="form" action="<?php echo base_url('character/updateReflexes') ?>" method="post"
                   id="editReflexesForm">
                 <div class="modal-body" id="reflexesListEdit">
                     <div class="form-group">
@@ -344,7 +344,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                 </button>
                 <h4 class="modal-title">Upravit</h4>
             </div>
-            <form role="form" action="<?php echo base_url('character/updateMagic/') ?>" method="post"
+            <form role="form" action="<?php echo base_url('character/updateMagic') ?>" method="post"
                   id="editMagicForm">
 
                 <div class="modal-body" id="magicListEdit">
@@ -372,7 +372,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                 </button>
                 <h4 class="modal-title">Upravit</h4>
             </div>
-            <form role="form" action="<?php echo base_url('character/updatePerks/') ?>" method="post"
+            <form role="form" action="<?php echo base_url('character/updatePerks') ?>" method="post"
                   id="editPerksForm">
 
                 <div class="modal-body" id="perksListEdit">
@@ -400,7 +400,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                 </button>
                 <h4 class="modal-title">Upravit</h4>
             </div>
-            <form role="form" action="<?php echo base_url('character/addSkill/') ?>" method="post"
+            <form role="form" action="<?php echo base_url('character/addSkill') ?>" method="post"
                   id="addSkillForm">
                 <div class="modal-body">
                     <div class="form-group" id="skillList">
@@ -445,7 +445,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                             aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Odstranit dovednost</h4>
             </div>
-            <form role="form" action="<?php echo base_url('character/removeSkill/') ?>" method="post"
+            <form role="form" action="<?php echo base_url('character/removeSkill') ?>" method="post"
                   id="removeSkillForm">
                 <div class="modal-body">
                     <p>Opravdu chcete odstranit dovednost?</p>
@@ -467,7 +467,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                 </button>
                 <h4 class="modal-title">Upravit</h4>
             </div>
-            <form role="form" action="<?php echo base_url('character/addItem/') ?>" method="post"
+            <form role="form" action="<?php echo base_url('character/addItem') ?>" method="post"
                   id="addItemForm">
                 <div class="modal-body">
                     <div class="form-group">
@@ -513,7 +513,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                             aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Odstranit předmět</h4>
             </div>
-            <form role="form" action="<?php echo base_url('character/removeItem/') ?>" method="post"
+            <form role="form" action="<?php echo base_url('character/removeItem') ?>" method="post"
                   id="removeItemForm">
                 <div class="modal-body">
                     <p>Opravdu chcete odstranit předmět?</p>
@@ -541,12 +541,12 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
         $("#charNav").addClass('active');
 
         skillsTable = $('#skillsTable').DataTable({
-            'ajax': base_url + 'character/fetchSkillsData/',
+            'ajax': base_url + 'character/fetchSkillsData',
             'order': []
         });
 
         itemsTable = $('#itemsTable').DataTable({
-            'ajax': base_url + 'character/fetchItemsData/',
+            'ajax': base_url + 'character/fetchItemsData',
             'order': []
         });
 
@@ -891,7 +891,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
     function addSkillLvlFunc(id) {
         if (id) {
             $.ajax({
-                url: base_url + 'character/addSkillLvl/',
+                url: base_url + 'character/addSkillLvl',
                 type: 'POST',
                 data: {skill_pos: id},
                 dataType: 'json',
@@ -911,7 +911,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
     function removeSkillLvlFunc(id) {
         if (id) {
             $.ajax({
-                url: base_url + 'character/removeSkillLvl/',
+                url: base_url + 'character/removeSkillLvl',
                 type: 'POST',
                 data: {skill_pos: id},
                 dataType: 'json',
@@ -948,12 +948,12 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                             $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">' +
                                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + response.messages +
                                 '</div>');
-                            $("#removeSkillModal").modal('hide');
                         } else {
                             $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">' +
                                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + response.messages +
                                 '</div>');
                         }
+                        $("#removeSkillModal").modal('hide');
                     }
                 });
 
@@ -965,7 +965,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
     function addItemQtyFunc(id) {
         if (id) {
             $.ajax({
-                url: base_url + 'character/addItemQty/',
+                url: base_url + 'character/addItemQty',
                 type: 'POST',
                 data: {item_pos: id},
                 dataType: 'json',
@@ -985,7 +985,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
     function removeItemQtyFunc(id) {
         if (id) {
             $.ajax({
-                url: base_url + 'character/removeItemQty/',
+                url: base_url + 'character/removeItemQty',
                 type: 'POST',
                 data: {item_pos: id},
                 dataType: 'json',
@@ -1020,12 +1020,12 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                             $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">' +
                                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + response.messages +
                                 '</div>');
-                            $("#removeItemModal").modal('hide');
                         } else {
                             $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">' +
                                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + response.messages +
                                 '</div>');
                         }
+                        $("#removeItemModal").modal('hide');
                     }
                 });
 

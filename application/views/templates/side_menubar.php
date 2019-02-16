@@ -206,7 +206,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                 <?php if (in_array('viewReports', $user_permission)): ?>
                     <li id="reportNav">
                         <a href="<?php echo base_url('reports') ?>">
-                            <i class="glyphicon glyphicon-stats"></i> <span>Reporty - 0.5.0</span>
+                            <i class="glyphicon glyphicon-stats"></i> <span>Reporty - 0.7.0</span>
                         </a>
                     </li>
                 <?php endif; ?>

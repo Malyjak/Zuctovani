@@ -32,6 +32,8 @@ class Dashboard extends Admin_Controller
         $this->load->model('model_locations');
         $this->load->model('model_skills');
         $this->load->model('model_races');
+        $this->load->model('model_character');
+        $this->load->model('model_companions');
     }
 
     public function index()
@@ -42,11 +44,17 @@ class Dashboard extends Admin_Controller
         $this->data['total_locations'] = $this->model_locations->countTotalLocations();
         $this->data['total_skills'] = $this->model_skills->countTotalSkills();
         $this->data['total_races'] = $this->model_races->countTotalRaces();
+        $this->data['total_characters'] = $this->model_character->countTotalCharacters();
+        $this->data['total_companions'] = $this->model_companions->countTotalCompanions();
 
         $user_id = $this->session->userdata('id');
-        $is_admin = ($user_id == 1) ? true : false;
+        $is_admin = ($user_id == 1);
+        $group = $this->model_users->getUserGroup($user_id);
+        // Change your storyteller group id here!
+        $is_storyteller = ($group['id'] == 2);
 
         $this->data['is_admin'] = $is_admin;
+        $this->data['is_storyteller'] = $is_storyteller;
         $this->render_template('Dashboard', $this->data);
     }
 

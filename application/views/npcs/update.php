@@ -849,12 +849,12 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                             $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">' +
                                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + response.messages +
                                 '</div>');
-                            $("#removeSkillModal").modal('hide');
                         } else {
                             $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">' +
                                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + response.messages +
                                 '</div>');
                         }
+                        $("#removeSkillModal").modal('hide');
                     }
                 });
 
@@ -921,12 +921,12 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                             $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">' +
                                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + response.messages +
                                 '</div>');
-                            $("#removeItemModal").modal('hide');
                         } else {
                             $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">' +
                                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + response.messages +
                                 '</div>');
                         }
+                        $("#removeItemModal").modal('hide');
                     }
                 });
 

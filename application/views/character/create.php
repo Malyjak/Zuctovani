@@ -22,8 +22,8 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
             <small>Postava</small>
         </h1>
         <ol class="breadcrumb">
-            <li><a href="<?php echo base_url('dashboard/') ?>"><i class="fa fa-line-chart"></i> Domů</a></li>
-            <li><a href="<?php echo base_url('character/') ?>">Postava</a></li>
+            <li><a href="<?php echo base_url('dashboard') ?>"><i class="fa fa-line-chart"></i> Domů</a></li>
+            <li><a href="<?php echo base_url('character') ?>">Postava</a></li>
             <li class="active">Vytvořit</li>
         </ol>
     </section>
@@ -54,7 +54,6 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                             <div class="validation-error">
                                 <?php echo validation_errors(); ?>
                             </div>
-                            <input name="user_id" type="hidden" value="<?php echo $user_id ?>"/>
                             <div class="form-group">
                                 <label for="name">Jméno</label>
                                 <input type="text" class="form-control" id="name" name="name" placeholder="Jméno"

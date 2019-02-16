@@ -63,6 +63,21 @@ password: a
 
 After entering these credentials you should be successfully logged in and redirected to a dashboard page.
 
+### Changing storyteller group id
+In
+
+```
+application/controllers/Dashboard.php
+```
+
+you can find two lines:
+
+```
+53: // Change your storyteller group id here!
+54: $is_storyteller = ($group['id'] == 2);
+```
+
+Second line needs to be edited if the first group created after login in (as admin) is not the storyteller group!
 ### Changing language
 
 Currently only supported language is Czech! Sorry guys :/ English translation will be added in future releases, after major functionality is reached.

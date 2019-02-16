@@ -27,10 +27,10 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
         </ol>
     </section>
     <section class="content">
-        <?php if ($is_admin == true): ?>
+        <?php if ($is_admin || $is_storyteller) { ?>
             <div class="row">
                 <div class="col-lg-3 col-xs-6">
-                    <div class="small-box bg-aqua">
+                    <div class="small-box bg-aqua-gradient">
                         <div class="inner">
                             <h3><?php echo $total_items ?></h3>
                             <p>Celkově předmětů</p>
@@ -43,7 +43,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                     </div>
                 </div>
                 <div class="col-lg-3 col-xs-6">
-                    <div class="small-box bg-green">
+                    <div class="small-box bg-green-gradient">
                         <div class="inner">
                             <h3><?php echo $total_npcs ?></h3>
                             <p>Celkově NPC</p>
@@ -56,7 +56,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                     </div>
                 </div>
                 <div class="col-lg-3 col-xs-6">
-                    <div class="small-box bg-red">
+                    <div class="small-box bg-red-gradient">
                         <div class="inner">
                             <h3><?php echo $total_locations ?></h3>
                             <p>Celkově lokací</p>
@@ -69,7 +69,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                     </div>
                 </div>
                 <div class="col-lg-3 col-xs-6">
-                    <div class="small-box bg-yellow">
+                    <div class="small-box bg-yellow-gradient">
                         <div class="inner">
                             <h3><?php echo $total_users ?></h3>
                             <p>Celkově hráčů</p>
@@ -84,7 +84,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
             </div>
             <div class="row">
                 <div class="col-lg-3 col-xs-6">
-                    <div class="small-box bg-blue">
+                    <div class="small-box bg-aqua">
                         <div class="inner">
                             <h3><?php echo $total_skills ?></h3>
                             <p>Celkově dovedností</p>
@@ -97,7 +97,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                     </div>
                 </div>
                 <div class="col-lg-3 col-xs-6">
-                    <div class="small-box bg-gray">
+                    <div class="small-box bg-green">
                         <div class="inner">
                             <h3><?php echo $total_races ?></h3>
                             <p>Celkově ras</p>
@@ -109,8 +109,36 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                                     class="fa fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
+                <div class="col-lg-3 col-xs-6">
+                    <div class="small-box bg-red">
+                        <div class="inner">
+                            <h3><?php echo $total_characters ?></h3>
+                            <p>Celkově postav</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-user"></i>
+                        </div>
+                        <a href="<?php echo base_url('TODO') ?>" class="small-box-footer">Více informací <i
+                                    class="fa fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-xs-6">
+                    <div class="small-box bg-yellow">
+                        <div class="inner">
+                            <h3><?php echo $total_companions ?></h3>
+                            <p>Celkově společníků</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-ios-paw"></i>
+                        </div>
+                        <a href="<?php echo base_url('TODO') ?>" class="small-box-footer">Více informací <i
+                                    class="fa fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
             </div>
-        <?php endif; ?>
+        <?php } else { ?>
+            <!--            TODO - dashboard pro hrace -->
+        <?php } ?>
     </section>
 </div>
 

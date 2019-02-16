@@ -22,7 +22,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
             <small>Společníci</small>
         </h1>
         <ol class="breadcrumb">
-            <li><a href="<?php echo base_url('dashboard/') ?>"><i class="fa fa-line-chart"></i> Domů</a></li>
+            <li><a href="<?php echo base_url('dashboard') ?>"><i class="fa fa-line-chart"></i> Domů</a></li>
             <li class="active">Společníci</li>
         </ol>
     </section>
@@ -111,7 +111,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                 </button>
                 <h4 class="modal-title">Upravit</h4>
             </div>
-            <form role="form" action="<?php echo base_url('companions/updatePile/') ?>" method="post"
+            <form role="form" action="<?php echo base_url('companions/updatePile') ?>" method="post"
                   id="editPileForm">
 
                 <div class="modal-body" id="pileListEdit">
@@ -132,7 +132,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
 </div>
 
 <?php if (in_array('deleteCompanion', $user_permission)): ?>
-    <div class="modal fade" tabindex="-1" role="dialog" id="removeModal">
+    <div class="modal fade" tabindex="-1" role="dialog" id="deleteModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -140,7 +140,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                                 aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">Odstranit Společníka</h4>
                 </div>
-                <form role="form" action="<?php echo base_url('companions/remove') ?>" method="post" id="removeForm">
+                <form role="form" action="<?php echo base_url('companions/delete') ?>" method="post" id="deleteForm">
                     <div class="modal-body">
                         <p>Opravdu chcete odstranit Společníka?</p>
                     </div>
@@ -225,7 +225,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
     function addQtyFunc(id) {
         if (id) {
             $.ajax({
-                url: base_url + 'companions/addQty/',
+                url: base_url + 'companions/addQty',
                 type: 'POST',
                 data: {comp_id: id},
                 dataType: 'json',
@@ -245,7 +245,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
     function removeQtyFunc(id) {
         if (id) {
             $.ajax({
-                url: base_url + 'companions/removeQty/',
+                url: base_url + 'companions/removeQty',
                 type: 'POST',
                 data: {comp_id: id},
                 dataType: 'json',
@@ -262,9 +262,9 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
         }
     }
 
-    function removeFunc(id) {
+    function deleteFunc(id) {
         if (id) {
-            $("#removeForm").on('submit', function () {
+            $("#deleteForm").on('submit', function () {
                 var form = $(this);
 
                 $(".text-danger").remove();
@@ -281,12 +281,12 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                             $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">' +
                                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + response.messages +
                                 '</div>');
-                            $("#removeModal").modal('hide');
                         } else {
                             $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">' +
                                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + response.messages +
                                 '</div>');
                         }
+                        $("#deleteModal").modal('hide');
                     }
                 });
 

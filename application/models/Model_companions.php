@@ -66,13 +66,41 @@ class Model_companions extends CI_Model
         }
     }
 
-    public function remove($id)
+    public function delete($id)
     {
         if ($id) {
             $this->db->where('id', $id);
             $delete = $this->db->delete('Z_companions');
             return ($delete == true) ? true : false;
         }
+    }
+
+    public function existInCompanions($id)
+    {
+        $sql = "SELECT * FROM z_companions WHERE id = ?";
+        $query = $this->db->query($sql, array($id));
+        return ($query->num_rows() == 1) ? true : false;
+    }
+
+    public function userIdMatch($user_id, $comp_id)
+    {
+        $sql = "SELECT user_id FROM z_companions WHERE id = ?";
+        $query = $this->db->query($sql, array($comp_id))->result_array();
+        $match = false;
+        foreach ($query as &$value) {
+            if (reset($value) == $user_id) {
+                $match = true;
+                break;
+            }
+        }
+        return $match;
+    }
+
+    public function countTotalCompanions()
+    {
+        $sql = "SELECT * FROM z_companions";
+        $query = $this->db->query($sql);
+        return $query->num_rows();
     }
 
 }

@@ -53,43 +53,55 @@ class Character extends Admin_Controller
 
     public function fetchSkillsData()
     {
+        if (!in_array('updateCharacter', $this->permission)) {
+            redirect('dashboard', 'refresh');
+        }
+
         $result = array('data' => array());
 
-        $data = $this->model_character->getCharacterData($this->session->userdata('id'));
+        $user_id = $this->session->userdata('id');
+        if (!$this->model_character->haveNoCharacter($user_id)) {
+            $data = $this->model_character->getCharacterData($user_id);
 
-        $skills = unserialize($data['skills']);
+            $skills = unserialize($data['skills']);
 
-        $skills_lvl = unserialize($data['skills_lvl']);
+            $skills_lvl = unserialize($data['skills_lvl']);
 
-        if ($skills != null) {
-            foreach ($skills as $key => $value) {
-                $skill = $this->model_skills->getSkillData($value);
+            if ($skills != null) {
+                foreach ($skills as $key => $value) {
+                    $skill = $this->model_skills->getSkillData($value);
 
-                $buttons = ' <button type="button" class="btn btn-default" onclick="addSkillLvlFunc(' . ($key + 1) . ')" data-toggle="modal" data-target="#addSkillLvl"><i class="fa fa-plus"></i></button>';
-                $buttons .= ' <button type="button" class="btn btn-default" onclick="removeSkillLvlFunc(' . ($key + 1) . ')" data-toggle="modal" data-target="#removeSkillLvl"><i class="fa fa-minus"></i></button>';
-                $buttons .= ' <button type="button" class="btn btn-default" onclick="removeSkillFunc(' . $skill['id'] . ')" data-toggle="modal" data-target="#removeSkillModal"><i class="fa fa-trash"></i></button>';
+                    $buttons = ' <button type="button" class="btn btn-default" onclick="addSkillLvlFunc(' . ($key + 1) . ')" data-toggle="modal" data-target="#addSkillLvl"><i class="fa fa-plus"></i></button>';
+                    $buttons .= ' <button type="button" class="btn btn-default" onclick="removeSkillLvlFunc(' . ($key + 1) . ')" data-toggle="modal" data-target="#removeSkillLvl"><i class="fa fa-minus"></i></button>';
+                    $buttons .= ' <button type="button" class="btn btn-default" onclick="removeSkillFunc(' . $skill['id'] . ')" data-toggle="modal" data-target="#removeSkillModal"><i class="fa fa-trash"></i></button>';
 
-                $attribute = '';
-                switch ($skill['attribute']) {
-                    case 1:
-                        $attribute = '<span class="label label-success">Kondice</span>';
-                        break;
-                    case 2:
-                        $attribute = '<span class="label label-primary">Mysl</span>';
-                        break;
-                    case 3:
-                        $attribute = '<span class="label label-warning">Působivost</span>';
-                        break;
+                    $attribute = '';
+                    switch ($skill['attribute']) {
+                        case 1:
+                            $attribute = '<span class="label label-success">Kondice</span>';
+                            break;
+                        case 2:
+                            $attribute = '<span class="label label-primary">Mysl</span>';
+                            break;
+                        case 3:
+                            $attribute = '<span class="label label-warning">Působivost</span>';
+                            break;
+                    }
+
+                    $result['data'][$key] = array(
+                        $skill['name'],
+                        $skills_lvl[$key],
+                        $attribute,
+                        $skill['description'],
+                        $buttons
+                    );
                 }
-
-                $result['data'][$key] = array(
-                    $skill['name'],
-                    $skills_lvl[$key],
-                    $attribute,
-                    $skill['description'],
-                    $buttons
-                );
             }
+        } else {
+            $this->data['races'] = $this->model_races->getRaceData();
+            $this->data['skills'] = $this->model_skills->getSkillData();
+            $this->data['items'] = $this->model_items->getPlayerItemData();
+            $this->render_template('character/create', $this->data);
         }
 
         echo json_encode($result);
@@ -97,78 +109,89 @@ class Character extends Admin_Controller
 
     public function fetchItemsData()
     {
+        if (!in_array('updateCharacter', $this->permission)) {
+            redirect('dashboard', 'refresh');
+        }
+
         $result = array('data' => array());
 
         $user_id = $this->session->userdata('id');
-        $data = $this->model_character->getCharacterData($user_id);
+        if (!$this->model_character->haveNoCharacter($user_id)) {
+            $data = $this->model_character->getCharacterData($user_id);
 
-        $items = unserialize($data['inventory']);
+            $items = unserialize($data['inventory']);
 
-        $items_qty = unserialize($data['inventory_qty']);
+            $items_qty = unserialize($data['inventory_qty']);
 
-        if ($items != null) {
-            foreach ($items as $key => $value) {
-                $item = $this->model_items->getItemData($value);
+            if ($items != null) {
+                foreach ($items as $key => $value) {
+                    $item = $this->model_items->getItemData($value);
 
-                $buttons = ' <button type="button" class="btn btn-default" onclick="addItemQtyFunc(' . ($key + 1) . ')" data-toggle="modal" data-target="#addItemQty"><i class="fa fa-plus"></i></button>';
-                $buttons .= ' <button type="button" class="btn btn-default" onclick="removeItemQtyFunc(' . ($key + 1) . ')" data-toggle="modal" data-target="#removeItemQty"><i class="fa fa-minus"></i></button>';
-                $buttons .= ' <button type="button" class="btn btn-default" onclick="removeItemFunc(' . $item['id'] . ')" data-toggle="modal" data-target="#removeItemModal"><i class="fa fa-trash"></i></button>';
+                    $buttons = ' <button type="button" class="btn btn-default" onclick="addItemQtyFunc(' . ($key + 1) . ')" data-toggle="modal" data-target="#addItemQty"><i class="fa fa-plus"></i></button>';
+                    $buttons .= ' <button type="button" class="btn btn-default" onclick="removeItemQtyFunc(' . ($key + 1) . ')" data-toggle="modal" data-target="#removeItemQty"><i class="fa fa-minus"></i></button>';
+                    $buttons .= ' <button type="button" class="btn btn-default" onclick="removeItemFunc(' . $item['id'] . ')" data-toggle="modal" data-target="#removeItemModal"><i class="fa fa-trash"></i></button>';
 
-                $quality = '';
-                switch ($item['quality']) {
-                    case 1:
-                        $quality = '<span class="label label-danger">Špatná</span>';
-                        break;
-                    case 2:
-                        $quality = '<span class="label label-warning">Průměrná</span>';
-                        break;
-                    case 3:
-                        $quality = '<span class="label label-success">Mistrovská</span>';
-                        break;
-                    case 4:
-                        $quality = '<span class="label label-primary">Artefakt/Legendární</span>';
-                        break;
+                    $quality = '';
+                    switch ($item['quality']) {
+                        case 1:
+                            $quality = '<span class="label label-danger">Špatná</span>';
+                            break;
+                        case 2:
+                            $quality = '<span class="label label-warning">Průměrná</span>';
+                            break;
+                        case 3:
+                            $quality = '<span class="label label-success">Mistrovská</span>';
+                            break;
+                        case 4:
+                            $quality = '<span class="label label-primary">Artefakt/Legendární</span>';
+                            break;
+                    }
+
+                    $purpose = '';
+                    switch ($item['purpose']) {
+                        case 1:
+                            $purpose = '<span>Výstroj</span>';
+                            break;
+                        case 2:
+                            $purpose = '<span>Nástroje</span>';
+                            break;
+                        case 3:
+                            $purpose = '<span>Použitelné</span>';
+                            break;
+                        case 4:
+                            $purpose = '<span>Ostatní</span>';
+                            break;
+                    }
+
+                    $type = '';
+                    switch ($item['type']) {
+                        case 1:
+                            $type = '<span>Běžný</span>';
+                            break;
+                        case 2:
+                            $type = '<span>Lehký/Rychlý</span>';
+                            break;
+                        case 3:
+                            $type = '<span>Těžký</span>';
+                            break;
+                    }
+
+                    $result['data'][$key] = array(
+                        $item['name'],
+                        $quality,
+                        $purpose,
+                        $type,
+                        $item['description'],
+                        $items_qty[$key] . "x",
+                        $buttons
+                    );
                 }
-
-                $purpose = '';
-                switch ($item['purpose']) {
-                    case 1:
-                        $purpose = '<span>Výstroj</span>';
-                        break;
-                    case 2:
-                        $purpose = '<span>Nástroje</span>';
-                        break;
-                    case 3:
-                        $purpose = '<span>Použitelné</span>';
-                        break;
-                    case 4:
-                        $purpose = '<span>Ostatní</span>';
-                        break;
-                }
-
-                $type = '';
-                switch ($item['type']) {
-                    case 1:
-                        $type = '<span>Běžný</span>';
-                        break;
-                    case 2:
-                        $type = '<span>Lehký/Rychlý</span>';
-                        break;
-                    case 3:
-                        $type = '<span>Těžký</span>';
-                        break;
-                }
-
-                $result['data'][$key] = array(
-                    $item['name'],
-                    $quality,
-                    $purpose,
-                    $type,
-                    $item['description'],
-                    $items_qty[$key]."x",
-                    $buttons
-                );
             }
+        } else {
+            $this->data['races'] = $this->model_races->getRaceData();
+            $this->data['skills'] = $this->model_skills->getSkillData();
+            $this->data['items'] = $this->model_items->getPlayerItemData();
+            $this->render_template('character/create', $this->data);
         }
 
         echo json_encode($result);
@@ -450,122 +473,6 @@ class Character extends Admin_Controller
         echo json_encode($response);
     }
 
-    public function addItem()
-    {
-        if (!in_array('updateCharacter', $this->permission)) {
-            redirect('dashboard', 'refresh');
-        }
-
-        $response = array();
-
-        $user_id = $this->session->userdata('id');
-        if (!$this->model_character->haveNoCharacter($user_id)) {
-            $this->form_validation->set_rules('item', 'Předmět', 'trim|required');
-
-            $this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
-
-            if ($this->form_validation->run() == TRUE) {
-                $char_data = $this->model_character->getCharacterData($user_id);
-                $items = unserialize($char_data['inventory']);
-                $items_qty = unserialize($char_data['inventory_qty']);
-
-                $item = $this->input->post('item');
-                if (($items !== null) && (false !== $key = array_search($item, $items))) {
-                    $items_qty[$key] = $items_qty[$key] + 1;
-                } else {
-                    $items[] = $this->input->post('item');
-                    $items_qty[] = 1;
-                }
-
-                $data = array(
-                    'inventory' => serialize($items),
-                    'inventory_qty' => serialize($items_qty),
-                );
-
-                $update = $this->model_character->update($data, $user_id);
-                if ($update == true) {
-                    $response['success'] = true;
-                    $response['messages'] = 'Úspěšně přidáno';
-                } else {
-                    $response['success'] = false;
-                    $response['messages'] = 'Nastala chyba!';
-                }
-            } else {
-                $response['success'] = false;
-                foreach ($_POST as $key => $value) {
-                    $response['messages'][$key] = form_error($key);
-                }
-            }
-        } else {
-            $response['success'] = false;
-            $response['messages'] = 'Obnovte prosím stránku';
-        }
-
-        echo json_encode($response);
-    }
-
-    public function create()
-    {
-        if (!in_array('createCharacter', $this->permission)) {
-            redirect('dashboard', 'refresh');
-        }
-
-        $this->form_validation->set_rules('name', 'Jméno', 'trim|required');
-        $this->form_validation->set_rules('race', 'Rasa', 'trim|numeric');
-        $this->form_validation->set_rules('money', 'Peníze', 'trim|numeric');
-
-        if ($this->form_validation->run() == TRUE) {
-            $skills = $this->input->post('skills');
-            if (is_null($skills)) {
-                $skills_lvl = null;
-            } else {
-                $skills_lvl = array_fill(0, count($skills), 6);
-            }
-
-            $inventory = $this->input->post('inventory');
-            if (is_null($inventory)) {
-                $inventory_qty = null;
-            } else {
-                $inventory_qty = array_fill(0, count($inventory), 1);
-            }
-
-            $data = array(
-                'user_id' => $this->input->post('user_id'),
-                'name' => $this->input->post('name'),
-                'race' => $this->input->post('race'),
-                'gift' => $this->input->post('gift'),
-                'origin' => $this->input->post('origin'),
-                'money' => $this->input->post('money'),
-                'magic' => $this->input->post('magic'),
-                'perks' => $this->input->post('perks'),
-                'skills' => serialize($skills),
-                'skills_lvl' => serialize($skills_lvl),
-                'inventory' => serialize($inventory),
-                'inventory_qty' => serialize($inventory_qty),
-            );
-
-            $create = $this->model_character->create($data);
-            if ($create == true) {
-                $this->session->set_flashdata('success', 'Postava byla úspěšně vytvořena');
-                redirect('character/', 'refresh');
-            } else {
-                $this->session->set_flashdata('errors', 'Nastala chyba!');
-                redirect('character/create', 'refresh');
-            }
-        } else {
-            $this->data['races'] = $this->model_races->getRaceData();
-            $this->data['skills'] = $this->model_skills->getSkillData();
-            $this->data['items'] = $this->model_items->getPlayerItemData();
-
-            $user_id = $this->session->userdata('id');
-            if ($this->model_character->haveNoCharacter($user_id)) {
-                $this->render_template('character/create', $this->data);
-            } else {
-                redirect('character', 'refresh');
-            }
-        }
-    }
-
     public function addSkillLvl()
     {
         if (!in_array('updateCharacter', $this->permission)) {
@@ -705,6 +612,60 @@ class Character extends Admin_Controller
         } else {
             $response['success'] = false;
             $response['messages'] = "Obnovte prosím stránku";
+        }
+
+        echo json_encode($response);
+    }
+
+    public function addItem()
+    {
+        if (!in_array('updateCharacter', $this->permission)) {
+            redirect('dashboard', 'refresh');
+        }
+
+        $response = array();
+
+        $user_id = $this->session->userdata('id');
+        if (!$this->model_character->haveNoCharacter($user_id)) {
+            $this->form_validation->set_rules('item', 'Předmět', 'trim|required');
+
+            $this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
+
+            if ($this->form_validation->run() == TRUE) {
+                $char_data = $this->model_character->getCharacterData($user_id);
+                $items = unserialize($char_data['inventory']);
+                $items_qty = unserialize($char_data['inventory_qty']);
+
+                $item = $this->input->post('item');
+                if (($items !== null) && (false !== $key = array_search($item, $items))) {
+                    $items_qty[$key] = $items_qty[$key] + 1;
+                } else {
+                    $items[] = $this->input->post('item');
+                    $items_qty[] = 1;
+                }
+
+                $data = array(
+                    'inventory' => serialize($items),
+                    'inventory_qty' => serialize($items_qty),
+                );
+
+                $update = $this->model_character->update($data, $user_id);
+                if ($update == true) {
+                    $response['success'] = true;
+                    $response['messages'] = 'Úspěšně přidáno';
+                } else {
+                    $response['success'] = false;
+                    $response['messages'] = 'Nastala chyba!';
+                }
+            } else {
+                $response['success'] = false;
+                foreach ($_POST as $key => $value) {
+                    $response['messages'][$key] = form_error($key);
+                }
+            }
+        } else {
+            $response['success'] = false;
+            $response['messages'] = 'Obnovte prosím stránku';
         }
 
         echo json_encode($response);
@@ -852,6 +813,69 @@ class Character extends Admin_Controller
         }
 
         echo json_encode($response);
+    }
+
+    public function create()
+    {
+        if (!in_array('createCharacter', $this->permission)) {
+            redirect('dashboard', 'refresh');
+        }
+
+        $user_id = $this->session->userdata('id');
+
+        $this->form_validation->set_rules('name', 'Jméno', 'trim|required');
+        $this->form_validation->set_rules('race', 'Rasa', 'trim|numeric');
+        $this->form_validation->set_rules('money', 'Peníze', 'trim|numeric');
+
+        if (($this->model_character->haveNoCharacter($user_id)) && ($this->form_validation->run() == TRUE)) {
+            $skills = $this->input->post('skills');
+            if (is_null($skills)) {
+                $skills_lvl = null;
+            } else {
+                $skills_lvl = array_fill(0, count($skills), 6);
+            }
+
+            $inventory = $this->input->post('inventory');
+            if (is_null($inventory)) {
+                $inventory_qty = null;
+            } else {
+                $inventory_qty = array_fill(0, count($inventory), 1);
+            }
+
+            $data = array(
+                'user_id' => $user_id,
+                'name' => $this->input->post('name'),
+                'race' => $this->input->post('race'),
+                'gift' => $this->input->post('gift'),
+                'origin' => $this->input->post('origin'),
+                'money' => $this->input->post('money'),
+                'magic' => $this->input->post('magic'),
+                'perks' => $this->input->post('perks'),
+                'skills' => serialize($skills),
+                'skills_lvl' => serialize($skills_lvl),
+                'inventory' => serialize($inventory),
+                'inventory_qty' => serialize($inventory_qty),
+            );
+
+            $create = $this->model_character->create($data);
+            if ($create == true) {
+                $this->session->set_flashdata('success', 'Postava byla úspěšně vytvořena');
+                redirect('character/', 'refresh');
+            } else {
+                $this->session->set_flashdata('errors', 'Nastala chyba!');
+                redirect('character/create', 'refresh');
+            }
+        } else {
+            $this->data['races'] = $this->model_races->getRaceData();
+            $this->data['skills'] = $this->model_skills->getSkillData();
+            $this->data['items'] = $this->model_items->getPlayerItemData();
+
+            if ($this->model_character->haveNoCharacter($user_id)) {
+                $this->render_template('character/create', $this->data);
+            } else {
+                redirect('character', 'refresh');
+            }
+        }
     }
 
 }

@@ -62,13 +62,6 @@ class Model_character extends CI_Model
         }
     }
 
-    public function countTotalCharacters()
-    {
-        $sql = "SELECT * FROM z_characters";
-        $query = $this->db->query($sql);
-        return $query->num_rows();
-    }
-
     public function haveNoCharacter($user_id)
     {
         $sql = "SELECT * FROM z_characters WHERE user_id = ?";
@@ -77,6 +70,13 @@ class Model_character extends CI_Model
             return false;
         }
         return true;
+    }
+
+    public function countTotalCharacters()
+    {
+        $sql = "SELECT * FROM z_characters";
+        $query = $this->db->query($sql);
+        return $query->num_rows();
     }
 
 }
