@@ -74,6 +74,17 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                                         <a class="small-box-footer" data-toggle="modal" data-target="#editNameModal">Upravit
                                             <i class="fa fa-pencil"></i></a>
                                     </div>
+                                    <div class="small-box bg-red">
+                                        <div class="inner" id="hpList">
+                                            <h3>HP: <?php echo $comp_data['hp'] . "/" . $comp_data['hp_max']; ?></h3>
+                                            <h4>MP: <?php echo $comp_data['mp'] . "/" . $comp_data['mp_max']; ?></h4>
+                                        </div>
+                                        <div class="icon">
+                                            <i class="ion ion-arrow-graph-up-right"></i>
+                                        </div>
+                                        <a class="small-box-footer" data-toggle="modal" data-target="#editHpModal">Upravit
+                                            <i class="fa fa-pencil"></i></a>
+                                    </div>
                                     <div class="small-box bg-blue">
                                         <div class="inner">
                                             <h3>Kouzla/Specializace</h3>
@@ -149,6 +160,53 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                         <label for="name">Jméno</label>
                         <input type="text" class="form-control" id="name" name="name"
                                value="<?php echo $comp_data['name']; ?>" autocomplete="off" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Zpět</button>
+                    <button type="submit" class="btn btn-primary">Uložit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="editHpModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Upravit</h4>
+            </div>
+            <form role="form" action="<?php echo base_url('companions/updateHp/') . $comp_id ?>" method="post"
+                  id="editHpForm">
+                <div class="modal-body" id="hpListEdit">
+                    <div class="row">
+                        <div class="col-lg-6 col-xs-6">
+                            <div class="form-group">
+                                <label for="hp">HP</label>
+                                <input type="number" class="form-control" id="hp" name="hp"
+                                       value="<?php echo $comp_data['hp']; ?>" autocomplete="off" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="mp">MP</label>
+                                <input type="number" class="form-control" id="mp" name="mp"
+                                       value="<?php echo $comp_data['mp']; ?>" autocomplete="nope" required>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-xs-6">
+                            <div class="form-group">
+                                <label for="hp_max">Max HP</label>
+                                <input type="number" class="form-control" id="hp_max" name="hp_max"
+                                       value="<?php echo $comp_data['hp_max']; ?>" autocomplete="off" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="mp_max">Max MP</label>
+                                <input type="number" class="form-control" id="mp_max" name="mp_max"
+                                       value="<?php echo $comp_data['mp_max']; ?>" autocomplete="off" required>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -368,6 +426,51 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                         $("#editNameModal").modal('hide');
                         $("#editNameForm")[0].reset();
                         $("#editNameForm .form-group").removeClass('has-error').removeClass('has-success');
+                    } else {
+                        if (response.messages instanceof Object) {
+                            $.each(response.messages, function (index, value) {
+                                var id = $("#" + index);
+
+                                id.closest('.form-group')
+                                    .removeClass('has-error')
+                                    .removeClass('has-success')
+                                    .addClass(value.length > 0 ? 'has-error' : 'has-success');
+
+                                id.after(value);
+                            });
+                        } else {
+                            $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">' +
+                                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+                                +response.messages + '</div>');
+                        }
+                    }
+                }
+            });
+
+            return false;
+        });
+
+        $('#editHpForm').submit(function () {
+            var form = $(this);
+
+            $(".text-danger").remove();
+
+            $.ajax({
+                url: form.attr('action'),
+                type: form.attr('method'),
+                data: form.serialize(),
+                dataType: 'json',
+                success: function (response) {
+                    $("#hpList").load(location.href + " #hpList");
+                    $("#hpListEdit").load(location.href + " #hpListEdit");
+
+                    if (response.success === true) {
+                        $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">' +
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+                            response.messages + '</div>');
+                        $("#editHpModal").modal('hide');
+                        $("#editHpForm")[0].reset();
+                        $("#editHpForm .form-group").removeClass('has-error').removeClass('has-success');
                     } else {
                         if (response.messages instanceof Object) {
                             $.each(response.messages, function (index, value) {

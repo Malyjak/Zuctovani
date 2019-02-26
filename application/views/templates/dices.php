@@ -15,3 +15,23 @@ You should have received a copy of the GNU General Public License
 along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
+<div class="modal fade" tabindex="-1" role="dialog" id="throwModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Hod kostkami</h4>
+            </div>
+            <form role="form" action="<?php echo base_url('dashboard/dices/10') ?>" method="post" id="diceForm">
+                <div class="modal-body">
+                    <p>Kolika kostkami chcete házet?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Zrušit</button>
+                    <button type="submit" class="btn btn-primary">Hodit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

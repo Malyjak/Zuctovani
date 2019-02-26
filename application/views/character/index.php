@@ -268,7 +268,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
                             <div class="form-group">
                                 <label for="mp">MP</label>
                                 <input type="number" class="form-control" id="mp" name="mp"
-                                       value="<?php echo $char_data['mp']; ?>" autocomplete="off" required>
+                                       value="<?php echo $char_data['mp']; ?>" autocomplete="nope" required>
                             </div>
                             <div class="form-group">
                                 <label for="sp">SP</label>

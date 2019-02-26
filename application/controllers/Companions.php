@@ -116,6 +116,10 @@ class Companions extends Admin_Controller
 
             $result['data'][$key] = array(
                 $value['name'],
+                $value['hp'],
+                $value['mp'],
+                $value['hp_max'],
+                $value['mp_max'],
                 $value['magic'],
                 implode(" ", $s),
                 implode(" ", $i),
@@ -300,7 +304,8 @@ class Companions extends Admin_Controller
                     'text' => $this->input->post('pile'),
                 );
 
-                $update = $this->model_piles->update($data, $this->model_piles->getPileData($user_id)['id']);
+                $update = $this->model_piles->getPileData($user_id);
+                $update = $this->model_piles->update($data, $update['id']);
                 if ($update == true) {
                     $response['success'] = true;
                     $response['messages'] = 'Úspěšně změněno';
@@ -345,6 +350,60 @@ class Companions extends Admin_Controller
                 if ($this->form_validation->run() == TRUE) {
                     $data = array(
                         'name' => $this->input->post('name'),
+                    );
+
+                    $update = $this->model_companions->update($data, $comp_id);
+                    if ($update == true) {
+                        $response['success'] = true;
+                        $response['messages'] = 'Úspěšně změněno';
+                    } else {
+                        $response['success'] = false;
+                        $response['messages'] = 'Nastala chyba!';
+                    }
+                } else {
+                    $response['success'] = false;
+                    foreach ($_POST as $key => $value) {
+                        $response['messages'][$key] = form_error($key);
+                    }
+                }
+            }
+        } else {
+            $response['success'] = false;
+            $response['messages'] = 'Obnovte prosím stránku';
+        }
+
+        echo json_encode($response);
+    }
+
+    public function updateHp($comp_id)
+    {
+        if (!in_array('updateCompanion', $this->permission)) {
+            redirect('dashboard', 'refresh');
+        }
+
+        $response = array();
+
+        if ($comp_id) {
+            if ($this->model_companions->existInCompanions($comp_id) == FALSE) {
+                $response['success'] = false;
+                $response['messages'] = 'Společník neexistuje!';
+            } else if ($this->model_companions->userIdMatch($this->session->userdata('id'), $comp_id) == FALSE) {
+                $response['success'] = false;
+                $response['messages'] = 'Společník vám nepatří!';
+            } else {
+                $this->form_validation->set_rules('hp', 'HP', 'trim|required|numeric');
+                $this->form_validation->set_rules('mp', 'MP', 'trim|required|numeric');
+                $this->form_validation->set_rules('hp_max', 'Max HP', 'trim|required|numeric');
+                $this->form_validation->set_rules('mp_max', 'Max MP', 'trim|required|numeric');
+
+                $this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
+
+                if ($this->form_validation->run() == TRUE) {
+                    $data = array(
+                        'hp' => $this->input->post('hp'),
+                        'mp' => $this->input->post('mp'),
+                        'hp_max' => $this->input->post('hp_max'),
+                        'mp_max' => $this->input->post('mp_max'),
                     );
 
                     $update = $this->model_companions->update($data, $comp_id);
