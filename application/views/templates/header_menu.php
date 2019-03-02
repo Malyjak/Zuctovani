@@ -24,7 +24,7 @@ along with Zuctovani.  If not, see <https://www.gnu.org/licenses/>.
         <a href="" class="sidebar-toggle" data-toggle="push-menu" role="button">
             <span class="sr-only">Změnit zobrazení</span>
         </a>
-        <a href="" class="sidebar-toggle dice-toggle" data-toggle="throwModal" role="button"> 0.6.0
+        <a href="" class="sidebar-toggle dice-toggle" onclick="throwFunc()" data-toggle="modal" data-target="#throwModal" role="button"> 0.6.0
             <span class="sr-only">Hod kostkami</span>
         </a>
     </nav>

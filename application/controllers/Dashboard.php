@@ -80,37 +80,53 @@ class Dashboard extends Admin_Controller
         $this->render_template('Dashboard', $this->data);
     }
 
-    public function dices($numOfDices)
+    public function dices()
     {
-        $result = 0;
-        $zero = 0;
-        $one = 0;
-        $two = 0;
-        if ($numOfDices) {
-            for ($i = 0; $i < $numOfDices; $i++) {
-                $temp = rand(1,6);
-                switch ($temp) {
-                    case 1:
-                    case 2:
-                        $zero++;
-                        break;
-                    case 3:
-                    case 4:
-                        $result++;
-                        $one++;
-                        break;
-                    case 5:
-                    case 6:
-                        $result += 2;
-                        $two++;
-                        break;
+        $response = array();
+
+        $this->form_validation->set_rules('dices', 'Počet kostek', 'trim|numeric');
+        if ($this->form_validation->run() == TRUE) {
+
+            $numOfDices = $this->input->post('dices');
+
+            if ($numOfDices < 0) {
+                $response['success'] = false;
+            } else {
+                $result = 0;
+                $zero = 0;
+                $one = 0;
+                $two = 0;
+                if ($numOfDices) {
+                    for ($i = 0; $i < $numOfDices; $i++) {
+                        $temp = rand(1, 6);
+                        switch ($temp) {
+                            case 1:
+                            case 2:
+                                $zero++;
+                                break;
+                            case 3:
+                            case 4:
+                                $result++;
+                                $one++;
+                                break;
+                            case 5:
+                            case 6:
+                                $result += 2;
+                                $two++;
+                                break;
+                        }
                     }
+                }
+
+                $response['success'] = true;
+                $response['result'] = $result;
+                $response['zero'] = $zero;
+                $response['one'] = $one;
+                $response['two'] = $two;
             }
         }
-        echo "padlo: ".$result."<br>";
-        echo "z toho nuly: ".$zero."<br>";
-        echo "z toho jedničky: ".$one."<br>";
-        echo "z toho dvojky: ".$two;
+
+        echo json_encode($response);
     }
 
 }
